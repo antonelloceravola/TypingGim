@@ -2,6 +2,10 @@ export function buildPrompt({ exercise, step, generator, state, layout, profile,
   const keys = resolveKeys(exercise, step, layout);
   const language = layout.language || "en";
 
+  if (generator.type === "sentenceDrill") {
+    return sentenceDrill(exercise, step, language);
+  }
+
   if (exercise.sentences) {
     return pickMany(exercise.sentences[language] || exercise.sentences.en || [], 2).join(" ");
   }
@@ -17,6 +21,8 @@ export function buildPrompt({ exercise, step, generator, state, layout, profile,
       return weakKeyBoost(keys, generator, weakKeys);
     case "wordMixer":
       return wordMixer(exercise, generator, language, keys);
+    case "sentenceDrill":
+      return sentenceDrill(exercise, step, language);
     default:
       return randomPairs(keys, generator);
   }
@@ -61,6 +67,25 @@ function wordMixer(exercise, generator, language, keys) {
   const source = exercise.words?.[language] || exercise.words?.en;
   const words = source?.length ? source : synthesizeWords(keys);
   return pickMany(words, generator.wordsPerRound || 8).join(" ");
+}
+
+export function getSentenceDrillItems(exercise, language = "en") {
+  const direct = exercise.sentences?.[language] || exercise.sentences?.en;
+  if (direct?.length) return direct;
+
+  const text = exercise.longText?.[language] || exercise.longText?.en || "";
+  return text
+    .replace(/\s+/g, " ")
+    .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+    ?.map((sentence) => sentence.trim())
+    .filter(Boolean) || [];
+}
+
+function sentenceDrill(exercise, step, language) {
+  const sentences = getSentenceDrillItems(exercise, language);
+  if (!sentences.length) return "";
+  const index = Math.min(step.sentenceIndex || 0, sentences.length - 1);
+  return sentences[index];
 }
 
 function synthesizeWords(keys) {

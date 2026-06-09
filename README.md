@@ -110,8 +110,23 @@ This first implementation includes:
 - LocalStorage-backed progress and statistics
 - Per-key accuracy and reaction time tracking
 - Adaptive weak-key practice injection
+- Sentence drills that repeat a sentence until it is typed cleanly a configured number of times
 - Visual keyboard highlighting for target, pressed, and mistake states
 - Lesson navigation, layout switching, game insertion, and reset controls
+
+## Sentence Drill Example
+
+Advanced exercises can present long text one sentence at a time with the `sentence-drill` generator.
+
+```json
+{
+  "generator": "sentence-drill",
+  "repeatUntilCorrect": 2,
+  "advance": "sequential"
+}
+```
+
+If the learner makes any mistake while typing the sentence, the sentence is shown again. It advances only after the sentence is typed cleanly the configured number of times.
 
 ## Running
 

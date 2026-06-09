@@ -5,7 +5,8 @@
     "generators/alternate.json",
     "generators/random-pairs.json",
     "generators/weak-key-boost.json",
-    "generators/word-mixer.json"
+    "generators/word-mixer.json",
+    "generators/sentence-drill.json"
   ],
   "games": [
     "games/falling-letters.json",
@@ -23,6 +24,7 @@
     "exercises/006-home-row-words.json",
     "exercises/007-top-row-ru-ei.json",
     "exercises/008-bottom-row-vm-c-comma.json",
-    "exercises/009-real-sentences.json"
+    "exercises/009-real-sentences.json",
+    "exercises/010-advanced-long-text.json"
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "id": "010-advanced-long-text",
+  "title": "Advanced Long Text",
+  "phase": "Advanced - Sentence Control",
+  "level": 6,
+  "keys": ["a", "s", "d", "f", "j", "k", "l", "r", "u", "e", "i", "o", "t", "y", "n", "m", "c", "v", "p", "g", "h", "b", "w", "q", "x", "z", ",", ".", ";"],
+  "longText": {
+    "en": "Typing well is not only a matter of speed. A calm rhythm helps the hands find each key without hesitation. When a mistake appears, the best practice is to slow down, repeat the sentence, and type it cleanly again. Over time, the keyboard becomes a familiar map instead of a puzzle. The goal is to keep the eyes on the screen, notice weak patterns, and let focused repetition make the movement automatic.",
+    "it": "Scrivere bene non è solo una questione di velocità. Un ritmo calmo aiuta le mani a trovare ogni tasto senza esitazione. Quando appare un errore, la pratica migliore è rallentare, ripetere la frase e scriverla di nuovo con precisione. Con il tempo, la tastiera diventa una mappa familiare invece di un rompicapo. L'obiettivo è tenere gli occhi sullo schermo, notare i punti deboli e lasciare che la ripetizione renda il movimento automatico."
+  },
+  "steps": [
+    {
+      "generator": "sentence-drill",
+      "repeatUntilCorrect": 2,
+      "advance": "sequential"
+    }
+  ]
+}

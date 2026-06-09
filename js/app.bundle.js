@@ -47,7 +47,8 @@
       { id: "alternate", type: "alternate", groups: 10 },
       { id: "random-pairs", type: "randomPairs", groups: 12 },
       { id: "weak-key-boost", type: "weakKeyBoost", groups: 10 },
-      { id: "word-mixer", type: "wordMixer", wordsPerRound: 8 }
+      { id: "word-mixer", type: "wordMixer", wordsPerRound: 8 },
+      { id: "sentence-drill", type: "sentenceDrill" }
     ],
     games: [
       { id: "falling-letters", name: "Falling Letters", type: "fallingLetters", durationSeconds: 20, spawnEveryMs: 1100 }
@@ -143,6 +144,18 @@
         keys: ["a", "s", "d", "f", "j", "k", "l", "r", "u", "e", "i", "v", "m", "c", ",", "."],
         sentences: { en: ["The dog is fast.", "I like typing.", "A small task is done."], it: ["Io amo scrivere.", "La casa è alta.", "Il sole è caldo."] },
         steps: [{ generator: "word-mixer" }]
+      },
+      {
+        id: "010-advanced-long-text",
+        title: "Advanced Long Text",
+        phase: "Advanced - Sentence Control",
+        level: 6,
+        keys: ["a", "s", "d", "f", "j", "k", "l", "r", "u", "e", "i", "o", "t", "y", "n", "m", "c", "v", "p", "g", "h", "b", "w", "q", "x", "z", ",", ".", ";"],
+        longText: {
+          en: "Typing well is not only a matter of speed. A calm rhythm helps the hands find each key without hesitation. When a mistake appears, the best practice is to slow down, repeat the sentence, and type it cleanly again. Over time, the keyboard becomes a familiar map instead of a puzzle. The goal is to keep the eyes on the screen, notice weak patterns, and let focused repetition make the movement automatic.",
+          it: "Scrivere bene non è solo una questione di velocità. Un ritmo calmo aiuta le mani a trovare ogni tasto senza esitazione. Quando appare un errore, la pratica migliore è rallentare, ripetere la frase e scriverla di nuovo con precisione. Con il tempo, la tastiera diventa una mappa familiare invece di un rompicapo. L'obiettivo è tenere gli occhi sullo schermo, notare i punti deboli e lasciare che la ripetizione renda il movimento automatico."
+        },
+        steps: [{ generator: "sentence-drill", repeatUntilCorrect: 2, advance: "sequential" }]
       }
     ]
   };
@@ -295,6 +308,7 @@
   function buildPrompt({ exercise, step, generator, layout, weakKeys }) {
     const keys = resolveKeys(exercise, step, layout);
     const language = layout.language || "en";
+    if (generator.type === "sentenceDrill") return sentenceDrill(exercise, step, language);
     if (exercise.sentences) return pickMany(exercise.sentences[language] || exercise.sentences.en || [], 2).join(" ");
     switch (generator.type) {
       case "repeat":
@@ -307,6 +321,8 @@
         return randomPairs(weakKeys.length ? [...weakKeys, ...weakKeys, ...keys] : keys, generator);
       case "wordMixer":
         return wordMixer(exercise, generator, language, keys);
+      case "sentenceDrill":
+        return sentenceDrill(exercise, step, language);
       default:
         return randomPairs(keys, generator);
     }
@@ -332,6 +348,24 @@
     const source = exercise.words?.[language] || exercise.words?.en;
     const words = source?.length ? source : Array.from({ length: 12 }, () => Array.from({ length: 3 + Math.floor(Math.random() * 3) }, () => pick(keys)).join(""));
     return pickMany(words, generator.wordsPerRound || 8).join(" ");
+  }
+
+  function getSentenceDrillItems(exercise, language = "en") {
+    const direct = exercise.sentences?.[language] || exercise.sentences?.en;
+    if (direct?.length) return direct;
+    const text = exercise.longText?.[language] || exercise.longText?.en || "";
+    return text
+      .replace(/\s+/g, " ")
+      .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+      ?.map((sentence) => sentence.trim())
+      .filter(Boolean) || [];
+  }
+
+  function sentenceDrill(exercise, step, language) {
+    const sentences = getSentenceDrillItems(exercise, language);
+    if (!sentences.length) return "";
+    const index = Math.min(step.sentenceIndex || 0, sentences.length - 1);
+    return sentences[index];
   }
 
   function pick(items) {
@@ -415,6 +449,13 @@
       this.position = 0;
       this.lastTargetAt = Date.now();
       this.lastMistake = null;
+      this.promptHadError = false;
+      this.sentenceDrill = {
+        exerciseId: null,
+        stepIndex: null,
+        sentenceIndex: 0,
+        cleanRepeats: 0
+      };
     }
 
     get layout() {
@@ -430,13 +471,16 @@
     }
 
     startCurrentStep() {
+      this.syncSentenceDrillState();
       const generator = this.content.generatorsById[this.step.generator];
+      const step = { ...this.step, sentenceIndex: this.sentenceDrill.sentenceIndex };
       const keys = resolveKeys(this.exercise, this.step, this.layout);
       const weakKeys = findWeakKeys(this.state, keys, this.content.profile);
-      this.prompt = buildPrompt({ exercise: this.exercise, step: this.step, generator, layout: this.layout, weakKeys });
+      this.prompt = buildPrompt({ exercise: this.exercise, step, generator, layout: this.layout, weakKeys });
       this.position = 0;
       this.lastTargetAt = Date.now();
       this.lastMistake = null;
+      this.promptHadError = false;
       this.dispatchEvent(new Event("change"));
     }
 
@@ -452,7 +496,8 @@
         this.lastMistake = null;
       } else {
         this.lastMistake = expected;
-        if (this.content.profile.adaptive?.repeatWrongKeyImmediately) {
+        this.promptHadError = true;
+        if (!this.isSentenceDrillStep() && this.content.profile.adaptive?.repeatWrongKeyImmediately) {
           this.prompt = `${this.prompt.slice(0, this.position)}${expected}${this.prompt.slice(this.position)}`;
         }
       }
@@ -462,6 +507,7 @@
     }
 
     advanceAfterCompletion() {
+      if (this.handleSentenceDrillCompletion()) return;
       const completedLessonId = this.exercise.id;
       if (this.state.stepIndex < this.exercise.steps.length - 1) {
         this.state.stepIndex += 1;
@@ -478,29 +524,34 @@
     previousLesson() {
       this.state.lessonIndex = Math.max(0, this.state.lessonIndex - 1);
       this.state.stepIndex = 0;
+      this.resetSentenceDrill();
       this.startCurrentStep();
     }
 
     nextLesson() {
       this.state.lessonIndex = Math.min(this.content.exercises.length - 1, this.state.lessonIndex + 1);
       this.state.stepIndex = 0;
+      this.resetSentenceDrill();
       this.startCurrentStep();
     }
 
     repeatLesson() {
       this.state.stepIndex = 0;
+      this.resetSentenceDrill();
       this.startCurrentStep();
     }
 
     goToLesson(index) {
       this.state.lessonIndex = Math.max(0, Math.min(this.content.exercises.length - 1, index));
       this.state.stepIndex = 0;
+      this.resetSentenceDrill();
       this.startCurrentStep();
     }
 
     setLayout(layoutId) {
       this.state.layoutId = layoutId;
       this.state.stepIndex = 0;
+      this.resetSentenceDrill();
       this.startCurrentStep();
     }
 
@@ -513,7 +564,65 @@
     }
 
     getAdaptiveHint() {
+      if (this.isSentenceDrillStep()) {
+        const sentences = getSentenceDrillItems(this.exercise, this.layout.language || "en");
+        const required = this.step.repeatUntilCorrect || 1;
+        return `Sentence ${this.sentenceDrill.sentenceIndex + 1}/${sentences.length} · Clean ${this.sentenceDrill.cleanRepeats}/${required}`;
+      }
       return getAdaptiveHint(this.state, resolveKeys(this.exercise, this.step, this.layout), this.content.profile);
+    }
+
+    syncSentenceDrillState() {
+      if (
+        this.sentenceDrill.exerciseId === this.exercise.id &&
+        this.sentenceDrill.stepIndex === this.state.stepIndex
+      ) {
+        return;
+      }
+      this.sentenceDrill = {
+        exerciseId: this.exercise.id,
+        stepIndex: this.state.stepIndex,
+        sentenceIndex: 0,
+        cleanRepeats: 0
+      };
+    }
+
+    resetSentenceDrill() {
+      this.sentenceDrill = {
+        exerciseId: null,
+        stepIndex: null,
+        sentenceIndex: 0,
+        cleanRepeats: 0
+      };
+    }
+
+    isSentenceDrillStep() {
+      const generator = this.content.generatorsById[this.step.generator];
+      return generator?.type === "sentenceDrill";
+    }
+
+    handleSentenceDrillCompletion() {
+      if (!this.isSentenceDrillStep()) return false;
+      const requiredRepeats = this.step.repeatUntilCorrect || 1;
+      const language = this.layout.language || "en";
+      const sentences = getSentenceDrillItems(this.exercise, language);
+      if (!this.promptHadError) {
+        this.sentenceDrill.cleanRepeats += 1;
+      } else {
+        this.sentenceDrill.cleanRepeats = 0;
+      }
+      if (this.sentenceDrill.cleanRepeats < requiredRepeats) {
+        this.startCurrentStep();
+        return true;
+      }
+      if (this.sentenceDrill.sentenceIndex < sentences.length - 1) {
+        this.sentenceDrill.sentenceIndex += 1;
+        this.sentenceDrill.cleanRepeats = 0;
+        this.startCurrentStep();
+        return true;
+      }
+      this.sentenceDrill.cleanRepeats = 0;
+      return false;
     }
   }
 

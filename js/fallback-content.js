@@ -42,7 +42,8 @@ export const fallbackContent = {
     { id: "alternate", type: "alternate", groups: 10 },
     { id: "random-pairs", type: "randomPairs", groups: 12 },
     { id: "weak-key-boost", type: "weakKeyBoost", groups: 10 },
-    { id: "word-mixer", type: "wordMixer", wordsPerRound: 8 }
+    { id: "word-mixer", type: "wordMixer", wordsPerRound: 8 },
+    { id: "sentence-drill", type: "sentenceDrill" }
   ],
   games: [
     { id: "falling-letters", name: "Falling Letters", type: "fallingLetters", durationSeconds: 20, spawnEveryMs: 1100 }
@@ -90,6 +91,18 @@ export const fallbackContent = {
         it: ["sala", "alla", "falla"]
       },
       steps: [{ generator: "word-mixer" }, { generator: "weak-key-boost" }]
+    },
+    {
+      id: "010-advanced-long-text",
+      title: "Advanced Long Text",
+      phase: "Advanced - Sentence Control",
+      level: 6,
+      keys: ["a", "s", "d", "f", "j", "k", "l", "r", "u", "e", "i", "o", "t", "y", "n", "m", "c", "v", "p", "g", "h", "b", "w", "q", "x", "z", ",", ".", ";"],
+      longText: {
+        en: "Typing well is not only a matter of speed. A calm rhythm helps the hands find each key without hesitation. When a mistake appears, the best practice is to slow down, repeat the sentence, and type it cleanly again.",
+        it: "Scrivere bene non è solo una questione di velocità. Un ritmo calmo aiuta le mani a trovare ogni tasto senza esitazione. Quando appare un errore, la pratica migliore è rallentare, ripetere la frase e scriverla di nuovo con precisione."
+      },
+      steps: [{ generator: "sentence-drill", repeatUntilCorrect: 2, advance: "sequential" }]
     }
   ]
 };

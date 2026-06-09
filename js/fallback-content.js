@@ -93,7 +93,7 @@ export const fallbackContent = {
       steps: [{ generator: "word-mixer" }, { generator: "weak-key-boost" }]
     },
     {
-      id: "010-advanced-long-text",
+      id: "100-advanced-long-text",
       title: "Advanced Long Text",
       phase: "Advanced - Sentence Control",
       level: 6,

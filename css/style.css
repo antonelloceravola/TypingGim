@@ -12,6 +12,26 @@
   --blue: #2f6eaa;
   --key: #f9fbfa;
   --key-shadow: #cdd9d2;
+  --finger-l5-bg: #f7d8df;
+  --finger-l5-line: #d46b82;
+  --finger-l4-bg: #f5e0c4;
+  --finger-l4-line: #c88735;
+  --finger-l3-bg: #f1edbd;
+  --finger-l3-line: #b8a832;
+  --finger-l2-bg: #d6ecd1;
+  --finger-l2-line: #65a95b;
+  --finger-lt-bg: #e2e5e8;
+  --finger-lt-line: #8a969f;
+  --finger-rt-bg: #e2e5e8;
+  --finger-rt-line: #8a969f;
+  --finger-r2-bg: #ccebe3;
+  --finger-r2-line: #4aa38f;
+  --finger-r3-bg: #d6e5fb;
+  --finger-r3-line: #5c8ecf;
+  --finger-r4-bg: #e4dcf6;
+  --finger-r4-line: #8b73c7;
+  --finger-r5-bg: #f1d6eb;
+  --finger-r5-line: #bd6baa;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -398,14 +418,16 @@ h2 {
   width: clamp(28px, 5.7vw, 58px);
   min-width: 28px;
   aspect-ratio: 1.08 / 1;
-  border: 1px solid var(--key-shadow);
+  border: 1px solid var(--finger-line, var(--key-shadow));
   border-bottom-width: 4px;
   border-radius: 8px;
-  background: var(--key);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.64), rgba(255,255,255,.14)),
+    var(--finger-bg, var(--key));
   color: var(--ink);
   font-weight: 800;
   text-transform: none;
-  transition: transform .08s ease, border-color .12s ease, background .12s ease;
+  transition: transform .08s ease, border-color .12s ease, background .12s ease, box-shadow .12s ease;
 }
 
 .key.wide {
@@ -420,19 +442,19 @@ h2 {
 
 .key.target {
   border-color: var(--gold);
-  background: #fff8df;
+  box-shadow: 0 0 0 3px rgba(201,151,44,.2);
 }
 
 .key.pressed {
   transform: translateY(3px);
   border-bottom-width: 1px;
   border-color: var(--accent);
-  background: rgba(22,119,95,.12);
+  box-shadow: inset 0 0 0 999px rgba(22,119,95,.12);
 }
 
 .key.mistake {
   border-color: var(--warn);
-  background: rgba(199,63,63,.12);
+  box-shadow: inset 0 0 0 999px rgba(199,63,63,.16);
 }
 
 .key small {
@@ -442,6 +464,102 @@ h2 {
   color: var(--muted);
   font-size: .55rem;
   font-weight: 700;
+}
+
+.finger-l5 {
+  --finger-bg: var(--finger-l5-bg);
+  --finger-line: var(--finger-l5-line);
+}
+
+.finger-l4 {
+  --finger-bg: var(--finger-l4-bg);
+  --finger-line: var(--finger-l4-line);
+}
+
+.finger-l3 {
+  --finger-bg: var(--finger-l3-bg);
+  --finger-line: var(--finger-l3-line);
+}
+
+.finger-l2 {
+  --finger-bg: var(--finger-l2-bg);
+  --finger-line: var(--finger-l2-line);
+}
+
+.finger-lt {
+  --finger-bg: var(--finger-lt-bg);
+  --finger-line: var(--finger-lt-line);
+}
+
+.finger-rt {
+  --finger-bg: var(--finger-rt-bg);
+  --finger-line: var(--finger-rt-line);
+}
+
+.finger-r2 {
+  --finger-bg: var(--finger-r2-bg);
+  --finger-line: var(--finger-r2-line);
+}
+
+.finger-r3 {
+  --finger-bg: var(--finger-r3-bg);
+  --finger-line: var(--finger-r3-line);
+}
+
+.finger-r4 {
+  --finger-bg: var(--finger-r4-bg);
+  --finger-line: var(--finger-r4-line);
+}
+
+.finger-r5 {
+  --finger-bg: var(--finger-r5-bg);
+  --finger-line: var(--finger-r5-line);
+}
+
+.finger-legend {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.finger-legend-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.finger-legend-title {
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.finger-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink);
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.finger-swatch {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--finger-line);
+  border-radius: 4px;
+  background: var(--finger-bg);
 }
 
 @media (max-width: 900px) {
@@ -503,9 +621,36 @@ h2 {
     gap: 4px;
   }
 
+  .finger-legend {
+    justify-content: flex-start;
+    gap: 10px;
+    max-width: 100%;
+  }
+
+  .finger-legend-group {
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 100%;
+  }
+
   .key {
+    width: clamp(22px, 5.7vw, 58px);
+    min-width: 22px;
     border-radius: 6px;
-    font-size: .74rem;
+    font-size: .68rem;
+  }
+
+  .finger-legend-title {
+    width: 100%;
+  }
+
+  .finger-legend-item {
+    font-size: .72rem;
+  }
+
+  .finger-swatch {
+    width: 12px;
+    height: 12px;
   }
 
   .key small {

@@ -190,8 +190,23 @@ h2 {
   border-bottom: 3px solid transparent;
 }
 
+.prompt-char.space {
+  align-self: center;
+  width: .58em;
+  min-width: .58em;
+  height: .58em;
+  border: 2px solid #dcdcdc;
+  border-radius: 4px;
+  background: #f1f4f2;
+}
+
 .prompt-char.done {
   color: var(--accent);
+}
+
+.prompt-char.done.space {
+  border-color: #9aaba2;
+  background: #e8eeeb;
 }
 
 .prompt-char.current {
@@ -199,9 +214,20 @@ h2 {
   color: var(--ink);
 }
 
+.prompt-char.current.space {
+  border-color: #7f8f87;
+  background: #edf1ef;
+  box-shadow: 0 0 0 3px rgba(127,143,135,.16);
+}
+
 .prompt-char.error {
   color: var(--warn);
   background: rgba(199, 63, 63, .11);
+}
+
+.prompt-char.error.space {
+  border-color: #9aaba2;
+  background: #e8eeeb;
 }
 
 .typing-input {

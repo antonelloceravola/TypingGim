@@ -657,7 +657,12 @@
       if (index < engine.position) span.classList.add("done");
       if (index === engine.position) span.classList.add("current");
       if (index === engine.position && engine.lastMistake) span.classList.add("error");
-      span.textContent = char === " " ? "·" : char;
+      if (char === " ") {
+        span.classList.add("space");
+        span.setAttribute("aria-label", "space");
+      } else {
+        span.textContent = char;
+      }
       els.prompt.appendChild(span);
     });
   }

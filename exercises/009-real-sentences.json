@@ -1,0 +1,14 @@
+{
+  "id": "009-real-sentences",
+  "title": "Real Sentences",
+  "phase": "Phase 5 - Real Sentences",
+  "level": 5,
+  "keys": ["a", "s", "d", "f", "j", "k", "l", "r", "u", "e", "i", "v", "m", "c", ",", "."],
+  "sentences": {
+    "en": ["The dog is fast.", "I like typing.", "A small task is done."],
+    "it": ["Io amo scrivere.", "La casa è alta.", "Il sole è caldo."]
+  },
+  "steps": [
+    { "generator": "word-mixer" }
+  ]
+}

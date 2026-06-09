@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TypingGim</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">TypingGim</p>
+          <h1>Adaptive touch typing trainer</h1>
+        </div>
+        <div class="toolbar" aria-label="Application controls">
+          <label class="select-label" for="layoutSelect">Layout</label>
+          <select id="layoutSelect"></select>
+          <button id="resetProgress" type="button" class="icon-button" title="Reset local progress" aria-label="Reset local progress">↺</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="practice-panel" aria-labelledby="lessonTitle">
+          <div class="lesson-header">
+            <div>
+              <p id="phaseLabel" class="phase-label">Phase</p>
+              <h2 id="lessonTitle">Loading lesson</h2>
+            </div>
+            <div class="lesson-actions">
+              <button id="prevLesson" type="button" title="Previous lesson" aria-label="Previous lesson">‹</button>
+              <button id="repeatLesson" type="button">Repeat</button>
+              <button id="nextLesson" type="button" title="Next lesson" aria-label="Next lesson">›</button>
+            </div>
+          </div>
+
+          <div class="exercise-meta">
+            <span id="stepLabel">Step 1</span>
+            <span id="adaptiveHint">Adaptive practice ready</span>
+          </div>
+
+          <div id="prompt" class="prompt" aria-live="polite"></div>
+          <label class="typing-label" for="typingInput">Type here</label>
+          <input id="typingInput" class="typing-input" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+
+          <div class="progress-track" aria-hidden="true">
+            <span id="progressBar"></span>
+          </div>
+
+          <div class="stats-grid" aria-label="Current statistics">
+            <div>
+              <span id="accuracyStat">100%</span>
+              <small>Accuracy</small>
+            </div>
+            <div>
+              <span id="wpmStat">0</span>
+              <small>WPM</small>
+            </div>
+            <div>
+              <span id="cpmStat">0</span>
+              <small>CPM</small>
+            </div>
+            <div>
+              <span id="weakKeyStat">-</span>
+              <small>Weak key</small>
+            </div>
+          </div>
+        </section>
+
+        <aside class="side-panel" aria-label="Progress and games">
+          <section>
+            <h2>Learning path</h2>
+            <ol id="lessonList" class="lesson-list"></ol>
+          </section>
+          <section>
+            <div class="section-title">
+              <h2>Mini game</h2>
+              <button id="startGame" type="button">Start</button>
+            </div>
+            <div id="gameArea" class="game-area">
+              <div id="gameMessage">A short challenge appears between lessons.</div>
+            </div>
+          </section>
+        </aside>
+      </main>
+
+      <section class="keyboard-zone" aria-label="Visual keyboard">
+        <div id="keyboard" class="keyboard"></div>
+      </section>
+    </div>
+
+    <script src="js/app.bundle.js" defer></script>
+  </body>
+</html>

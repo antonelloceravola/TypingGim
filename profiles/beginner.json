@@ -1,0 +1,13 @@
+{
+  "id": "beginner",
+  "name": "Beginner",
+  "adaptive": {
+    "enabled": true,
+    "repeatWrongKeyImmediately": true,
+    "increaseDifficultyAboveAccuracy": 0.96,
+    "decreaseDifficultyBelowAccuracy": 0.85,
+    "weakKeyErrorRate": 0.12,
+    "slowKeyMs": 900
+  },
+  "gameEveryCompletedLessons": 2
+}

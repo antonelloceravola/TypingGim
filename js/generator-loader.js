@@ -4,9 +4,9 @@ function buildPrompt({ exercise, step, generator, state, layout, profile, weakKe
   const keys = resolveKeys(exercise, step, layout);
   const language = layout.language || "en";
 
-  if (generator.type === "sentenceDrill") {
-    return sentenceDrill(exercise, step, language);
-  }
+  // if (generator.type === "sentenceDrill") {
+  //   return sentenceDrill(exercise, step, language);
+  // }
 
   if (exercise.sentences) {
     return pickMany(exercise.sentences[language] || exercise.sentences.en || [], 2).join(" ");

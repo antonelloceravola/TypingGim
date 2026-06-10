@@ -12,8 +12,11 @@ const els = {
   typingInput: document.querySelector("#typingInput"),
   progressBar: document.querySelector("#progressBar"),
   accuracyStat: document.querySelector("#accuracyStat"),
+  accuracyHistory: document.querySelector("#accuracyHistory"),
   wpmStat: document.querySelector("#wpmStat"),
+  wpmHistory: document.querySelector("#wpmHistory"),
   cpmStat: document.querySelector("#cpmStat"),
+  cpmHistory: document.querySelector("#cpmHistory"),
   weakKeyStat: document.querySelector("#weakKeyStat"),
   lessonList: document.querySelector("#lessonList"),
   keyboard: document.querySelector("#keyboard"),
@@ -60,6 +63,7 @@ function bindEvents() {
       event.preventDefault();
       engine.handleCharacter(event.key);
       els.typingInput.value = "";
+      recordMetricSnapshot();
       window.TypingGim.saveState(state);
     }
   });
@@ -139,10 +143,75 @@ function renderStats() {
     .filter(([, stats]) => stats.attempts >= 3)
     .sort(([, a], [, b]) => (b.errors / b.attempts) - (a.errors / a.attempts))[0]?.[0] || "-";
 
-  els.accuracyStat.textContent = `${Math.round(window.TypingGim.getAccuracy(state) * 100)}%`;
-  els.wpmStat.textContent = String(window.TypingGim.getWpm(state));
-  els.cpmStat.textContent = String(window.TypingGim.getCpm(state));
+  const accuracy = Math.round(window.TypingGim.getAccuracy(state) * 100);
+  const wpm = window.TypingGim.getWpm(state);
+  const cpm = window.TypingGim.getCpm(state);
+
+  els.accuracyStat.textContent = `${accuracy}%`;
+  els.wpmStat.textContent = String(wpm);
+  els.cpmStat.textContent = String(cpm);
   els.weakKeyStat.textContent = weakKey;
+
+  renderHistory(els.accuracyHistory, getHistoryValues("accuracy"), { max: 100, suffix: "%" });
+  renderHistory(els.wpmHistory, getHistoryValues("wpm"), { max: null, suffix: " WPM" });
+  renderHistory(els.cpmHistory, getHistoryValues("cpm"), { max: null, suffix: " CPM" });
+}
+
+function recordMetricSnapshot() {
+  state.history ||= { metrics: [] };
+  state.history.metrics ||= [];
+  const attempts = state.totals.attempts;
+  const previous = state.history.metrics.at(-1);
+
+  if (attempts < 3) return;
+  if (previous && attempts - previous.attempts < 5) return;
+
+  state.history.metrics.push({
+    attempts,
+    accuracy: Math.round(window.TypingGim.getAccuracy(state) * 100),
+    wpm: window.TypingGim.getWpm(state),
+    cpm: window.TypingGim.getCpm(state),
+    at: Date.now()
+  });
+
+  if (state.history.metrics.length > 36) {
+    state.history.metrics = state.history.metrics.slice(-36);
+  }
+}
+
+function getHistoryValues(key) {
+  const history = state.history?.metrics || [];
+  const values = history.map((entry) => entry[key]).filter((value) => Number.isFinite(value));
+  if (values.length) return values;
+
+  if (key === "accuracy") return [Math.round(window.TypingGim.getAccuracy(state) * 100)];
+  if (key === "wpm") return [window.TypingGim.getWpm(state)];
+  if (key === "cpm") return [window.TypingGim.getCpm(state)];
+  return [];
+}
+
+function renderHistory(container, values, options) {
+  if (!container) return;
+  container.innerHTML = "";
+  const barCount = 18;
+  const visibleValues = values.slice(-barCount);
+  const max = options.max || Math.max(1, ...visibleValues);
+  const chartHeight = 24;
+  const paddedValues = visibleValues.length
+    ? Array.from({ length: barCount }, (_, index) => visibleValues[Math.max(0, visibleValues.length - barCount + index)] ?? visibleValues[0])
+    : [];
+
+  paddedValues.forEach((value, index) => {
+    const bar = document.createElement("span");
+    const height = Math.max(4, Math.min(chartHeight, Math.round((value / max) * chartHeight)));
+    bar.className = "stat-history-bar";
+    bar.style.height = `${height}px`;
+    bar.title = `${value}${options.suffix}`;
+    if (index < barCount - visibleValues.length) {
+      bar.classList.add("estimated");
+    }
+    container.appendChild(bar);
+  });
 }
 
 function renderLessonList() {

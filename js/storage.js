@@ -33,6 +33,9 @@ function createDefaultState() {
       startedAt: Date.now(),
       practiceMs: 0
     },
+    history: {
+      metrics: []
+    },
     keys: {},
     exercises: {},
     lastPracticeDate: null,

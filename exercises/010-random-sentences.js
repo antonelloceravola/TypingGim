@@ -79,17 +79,8 @@ window.TypingGimContent.exercises.push({
   },
 
   "steps": [
-    {
-      "generator": "random-sentences",
-      "sentenceCount": 1
-    },
-    {
-      "generator": "random-sentences",
-      "sentenceCount": 2
-    },
-    {
-      "generator": "random-sentences",
-      "sentenceCount": 3
-    }
+    { "generator": "random-sentences", "sentenceCount": 1 },
+    { "generator": "random-sentences", "sentenceCount": 2 },
+    { "generator": "random-sentences", "sentenceCount": 3 }
   ]
 });

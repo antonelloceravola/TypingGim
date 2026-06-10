@@ -9,7 +9,7 @@ window.TypingGim.loadContent = async function loadContent() {
   await loadCategoryScripts("generators", manifest.generators);
   await loadCategoryScripts("games", manifest.games);
   await loadCategoryScripts("profiles", manifest.profiles);
-  await loadCategoryScripts("exercises", manifest.exercises);
+  await loadCategoryScripts("exercises", manifest.exercises.sort());
 
   return normalize(window.TypingGimContent);
 };

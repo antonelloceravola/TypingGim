@@ -1,8 +1,10 @@
 window.TypingGimContent.exercises.push({
-  "id": "100-advanced-long-text",
+  "id": "0036-advanced-long-text",
   "title": "Advanced Long Text",
   "phase": "Advanced - Sentence Control",
   "level": 6,
+  "goal": "Practice longer text one sentence at a time.",
+  "instructions": "Type each sentence cleanly twice before moving on. Slow down after mistakes and let repetition build control.",
   "keys": ["a", "s", "d", "f", "j", "k", "l", "r", "u", "e", "i", "o", "t", "y", "n", "m", "c", "v", "p", "g", "h", "b", "w", "q", "x", "z", ",", ".", ";"],
   "longText": {
     "en": "Typing well is not only a matter of speed. A calm rhythm helps the hands find each key without hesitation. When a mistake appears, the best practice is to slow down, repeat the sentence, and type it cleanly again. Over time, the keyboard becomes a familiar map instead of a puzzle. The goal is to keep the eyes on the screen, notice weak patterns, and let focused repetition make the movement automatic.",

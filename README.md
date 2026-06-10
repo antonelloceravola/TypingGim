@@ -52,7 +52,7 @@ Examples:
 
 The application engine should remain stable.
 
-New content should be added by creating JSON files. No JavaScript modifications should be required for:
+New content should be added by creating content files. No engine modifications should be required for:
 
 - New lessons
 - New generators
@@ -77,26 +77,26 @@ typinggim/
 │   ├── storage.js
 │   └── statistics.js
 ├── layouts/
-│   ├── us.json
-│   ├── uk.json
-│   └── it.json
+│   ├── us.js
+│   ├── uk.js
+│   └── it.js
 ├── exercises/
-│   ├── 001-home-row-fj.json
-│   ├── 002-home-row-dk.json
+│   ├── 0001-keyboard-mirror-free-press.js
+│   ├── 0007-home-row-fj.js
 │   └── ...
 ├── generators/
-│   ├── repeat.json
-│   ├── alternate.json
-│   ├── random-pairs.json
-│   ├── weak-key-boost.json
-│   └── word-mixer.json
+│   ├── free-press.js
+│   ├── key-discovery.js
+│   ├── keyboard-sequence.js
+│   ├── repeat.js
+│   └── word-mixer.js
 ├── games/
-│   ├── falling-letters.json
-│   ├── typing-race.json
-│   ├── repair-the-word.json
-│   └── keyboard-simon.json
+│   ├── falling-letters.js
+│   ├── typing-race.js
+│   ├── repair-the-word.js
+│   └── keyboard-simon.js
 └── profiles/
-    └── beginner.json
+    └── beginner.js
 ```
 
 ## Current Implementation
@@ -105,8 +105,8 @@ This first implementation includes:
 
 - A usable browser app in `index.html`
 - US, UK, and Italian keyboard layouts
-- Beginner lessons for home row, top row, bottom row, words, and sentences
-- JSON-defined generators and games
+- Beginner lessons for screen-keyboard orientation, home row, top row, bottom row, words, and sentences
+- JavaScript-defined content files that work when `index.html` is opened directly
 - LocalStorage-backed progress and statistics
 - Per-key accuracy and reaction time tracking
 - Adaptive weak-key practice injection
@@ -130,15 +130,7 @@ If the learner makes any mistake while typing the sentence, the sentence is show
 
 ## Running
 
-Open `index.html` in a browser for the built-in content bundle fallback.
-
-For loading the JSON files directly during development, run a static server from the project directory:
-
-```sh
-python3 -m http.server 4173
-```
-
-Then open `http://localhost:4173`.
+Open `index.html` directly in a browser. No local web server is required.
 
 ## Future Ideas
 
@@ -147,4 +139,4 @@ Then open `http://localhost:4173`.
 - More language packs
 - Achievement system
 - Richer adaptive lesson scheduling
-- Detailed JSON schemas for layouts, exercises, generators, games, and profiles
+- Detailed content schemas for layouts, exercises, generators, games, and profiles

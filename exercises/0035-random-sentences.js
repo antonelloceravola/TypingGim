@@ -1,8 +1,10 @@
 window.TypingGimContent.exercises.push({
-  "id": "010-random-sentences",
+  "id": "0035-random-sentences",
   "title": "Random Sentences",
   "phase": "Phase 5 - Random Sentences",
   "level": 5,
+  "goal": "Practice varied sentence material without memorizing the order.",
+  "instructions": "Type the generated sentences with steady rhythm. Let mistakes reveal what needs more practice.",
 
   "keys": [
     "a","s","d","f","j","k","l",

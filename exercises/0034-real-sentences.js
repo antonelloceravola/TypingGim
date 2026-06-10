@@ -1,8 +1,10 @@
 window.TypingGimContent.exercises.push({
-  "id": "009-real-sentences",
+  "id": "0034-real-sentences",
   "title": "Real Sentences",
   "phase": "Phase 5 - Real Sentences",
   "level": 5,
+  "goal": "Use typing skills in real sentence flow.",
+  "instructions": "Type one sentence at a time. If a sentence is difficult, repeat it calmly until it becomes clean.",
   "keys": ["a", "s", "d", "f", "j", "k", "l", "r", "u", "e", "i", "v", "m", "c", ",", "."],
   "sentences": {
     "en": [

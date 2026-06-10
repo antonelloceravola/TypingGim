@@ -30,7 +30,9 @@ let state;
 let engine;
 let games;
 let currentLessonId = null;
-let lessonBannerTimer = null;
+let lessonIntroActive = false;
+let lastPreviewKey = null;
+let previewTimers = [];
 
 async function main() {
   content = await window.TypingGim.loadContent();
@@ -52,6 +54,12 @@ function bindEvents() {
   engine.addEventListener("lessoncomplete", maybeStartGame);
 
   els.typingInput.addEventListener("keydown", (event) => {
+    if (lessonIntroActive) {
+      event.preventDefault();
+      event.stopPropagation();
+      dismissLessonIntro();
+      return;
+    }
     if (games?.isRunning()) {
       event.preventDefault();
       els.typingInput.value = "";
@@ -64,6 +72,7 @@ function bindEvents() {
     }
     if (event.key.length === 1 || event.key === " ") {
       event.preventDefault();
+      clearStepPreview();
       engine.handleCharacter(event.key);
       els.typingInput.value = "";
       recordMetricSnapshot();
@@ -72,6 +81,12 @@ function bindEvents() {
   });
 
   window.addEventListener("keydown", (event) => {
+    if (lessonIntroActive) {
+      event.preventDefault();
+      dismissLessonIntro();
+      return;
+    }
+
     if (handleLessonArrowNavigation(event)) return;
 
     window.TypingGim.setKeyboardState(els.keyboard, {
@@ -105,6 +120,11 @@ function bindEvents() {
     window.TypingGim.saveState(state);
   });
   els.startGame.addEventListener("click", () => games.start());
+  els.lessonBanner.addEventListener("click", (event) => {
+    if (event.target.closest("[data-start-exercise]")) {
+      dismissLessonIntro();
+    }
+  });
 }
 
 function render() {
@@ -121,6 +141,7 @@ function render() {
   els.adaptiveHint.textContent = engine.getAdaptiveHint();
   els.progressBar.style.width = `${Math.round(engine.getProgress() * 100)}%`;
   handleLessonChangeNotice();
+  handleStepPreview();
 }
 
 function renderPrompt() {
@@ -267,7 +288,7 @@ function goToNextLesson() {
 function repeatCurrentExercise() {
   engine.repeatLesson();
   window.TypingGim.saveState(state);
-  showLessonBanner(`Exercise restarted: ${engine.exercise.title}`);
+  showLessonIntro(engine.exercise, "Exercise restarted");
   els.typingInput.focus();
 }
 
@@ -277,30 +298,86 @@ function handleLessonChangeNotice() {
 
   if (currentLessonId === null) {
     currentLessonId = lesson.id;
+    showLessonIntro(lesson, "New exercise");
     return;
   }
 
   if (currentLessonId === lesson.id) return;
   currentLessonId = lesson.id;
-  showLessonBanner(`Exercise changed: ${lesson.title}`);
+  showLessonIntro(lesson, "Exercise changed");
 }
 
-function showLessonBanner(message) {
+function showLessonIntro(lesson, label = "Exercise") {
   if (!els.lessonBanner) return;
-  clearTimeout(lessonBannerTimer);
-  els.lessonBanner.textContent = message;
+  clearStepPreview();
+  lessonIntroActive = true;
+  lastPreviewKey = null;
+  els.lessonBanner.innerHTML = `
+    <p class="lesson-banner-label">${label}</p>
+    <h3>${escapeHtml(lesson.title)}</h3>
+    ${lesson.goal ? `<p><strong>Goal:</strong> ${escapeHtml(lesson.goal)}</p>` : ""}
+    ${lesson.instructions ? `<p><strong>Instructions:</strong> ${escapeHtml(lesson.instructions)}</p>` : ""}
+    <button type="button" data-start-exercise>Press any key to start</button>
+  `;
   els.lessonBanner.classList.add("visible");
   els.lessonBanner.setAttribute("aria-hidden", "false");
-  lessonBannerTimer = setTimeout(() => {
-    els.lessonBanner.classList.remove("visible");
-    els.lessonBanner.setAttribute("aria-hidden", "true");
-  }, 2600);
+}
+
+function dismissLessonIntro() {
+  if (!lessonIntroActive) return;
+  lessonIntroActive = false;
+  els.lessonBanner.classList.remove("visible");
+  els.lessonBanner.setAttribute("aria-hidden", "true");
+  els.typingInput.focus();
+  handleStepPreview(true);
 }
 
 function scrollCurrentLessonIntoView() {
   const activeButton = els.lessonList.querySelector("button.active");
   if (!activeButton) return;
   activeButton.scrollIntoView({ block: "nearest", inline: "nearest" });
+}
+
+function handleStepPreview(force = false) {
+  if (lessonIntroActive) return;
+  const previewKey = `${engine.exercise.id}:${state.stepIndex}:${engine.prompt}`;
+  if (!force && lastPreviewKey === previewKey) return;
+  lastPreviewKey = previewKey;
+  clearStepPreview();
+
+  if (!engine.step.previewKeyboard) return;
+  const keys = [...engine.prompt].filter((key) => key !== " ").slice(0, 36);
+  keys.forEach((key, index) => {
+    previewTimers.push(setTimeout(() => {
+      window.TypingGim.setKeyboardState(els.keyboard, {
+        target: engine.getTargetKey(),
+        pressed: key,
+        mistake: null
+      });
+    }, index * 170));
+  });
+
+  previewTimers.push(setTimeout(() => {
+    window.TypingGim.setKeyboardState(els.keyboard, {
+      target: engine.getTargetKey(),
+      pressed: null,
+      mistake: engine.lastMistake
+    });
+  }, keys.length * 170 + 220));
+}
+
+function clearStepPreview() {
+  previewTimers.forEach((timer) => clearTimeout(timer));
+  previewTimers = [];
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function renderLayoutOptions() {

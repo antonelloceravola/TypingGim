@@ -1,8 +1,10 @@
 window.TypingGimContent.exercises.push({
-  "id": "006-home-row-words",
+  "id": "0012-home-row-words",
   "title": "Home Row Words",
   "phase": "Phase 2 - Home Row Words",
   "level": 2,
+  "goal": "Connect home-row letters into word-like movement.",
+  "instructions": "Type short words made from known keys. Keep your eyes on the screen and let the virtual keyboard support you.",
   "keys": ["a", "s", "d", "f", "j", "k", "l", ";"],
   "layoutKeyOverrides": { "it": ["a", "s", "d", "f", "j", "k", "l", "ò"] },
   "words": {

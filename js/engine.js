@@ -54,7 +54,7 @@ class TypingEngine extends EventTarget {
     if (!rawInput || this.isComplete()) return;
 
     const typed = rawInput === "Space" ? " " : rawInput;
-    const expected = this.prompt[this.position];
+    const expected = this.isFreePressStep() ? typed : this.prompt[this.position];
     const correct = typed === expected;
     const reactionMs = Date.now() - this.lastTargetAt;
 
@@ -188,6 +188,11 @@ class TypingEngine extends EventTarget {
   isSentenceDrillStep() {
     const generator = this.content.generatorsById[this.step.generator];
     return generator?.type === "sentenceDrill";
+  }
+
+  isFreePressStep() {
+    const generator = this.content.generatorsById[this.step.generator];
+    return this.step.acceptAnyKey || generator?.type === "freePress";
   }
 
   handleSentenceDrillCompletion() {

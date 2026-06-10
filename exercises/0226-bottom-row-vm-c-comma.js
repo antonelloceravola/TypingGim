@@ -1,5 +1,5 @@
 window.TypingGimContent.exercises.push({
-  "id": "0026-bottom-row-vm-c-comma",
+  "id": "0226-bottom-row-vm-c-comma",
   "title": "Bottom Row - V M C ,",
   "phase": "Phase 4 - Bottom Row",
   "level": 4,

@@ -1,5 +1,5 @@
 window.TypingGimContent.exercises.push({
-  "id": "0036-advanced-long-text",
+  "id": "0236-advanced-long-text",
   "title": "Advanced Long Text",
   "phase": "Advanced - Sentence Control",
   "level": 6,

@@ -1,5 +1,5 @@
 window.TypingGimContent.exercises.push({
-  "id": "0035-random-sentences",
+  "id": "0235-random-sentences",
   "title": "Random Sentences",
   "phase": "Phase 5 - Random Sentences",
   "level": 5,

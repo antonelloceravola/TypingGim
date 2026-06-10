@@ -32,6 +32,15 @@ class GamesEngine {
     this.area.innerHTML = `<div id="gameMessage">${message}</div>`;
   }
 
+  showReadyMessage(message = "Mini game ready. Press Start when you want to play.") {
+    if (this.active) return;
+    this.area.innerHTML = `<div id="gameMessage">${message}</div>`;
+  }
+
+  isRunning() {
+    return Boolean(this.active);
+  }
+
   spawn() {
     const keys = this.engine.exercise.keys || ["f", "j"];
     const letter = keys[Math.floor(Math.random() * keys.length)] || "f";

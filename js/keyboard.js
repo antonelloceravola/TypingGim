@@ -71,7 +71,9 @@ function getFingerForKey(key, layout) {
 }
 
 function normalizeKey(key) {
-  return key === " " ? "space" : key;
+  if (key === " ") return "space";
+  if (typeof key !== "string") return key;
+  return key.length === 1 ? key.toLocaleLowerCase() : key;
 }
 
 const inferredFingerMap = {

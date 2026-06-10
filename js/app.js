@@ -46,6 +46,11 @@ function bindEvents() {
   engine.addEventListener("lessoncomplete", maybeStartGame);
 
   els.typingInput.addEventListener("keydown", (event) => {
+    if (games?.isRunning()) {
+      event.preventDefault();
+      els.typingInput.value = "";
+      return;
+    }
     if (event.metaKey || event.ctrlKey || event.altKey) return;
     if (event.key === "Backspace") {
       event.preventDefault();
@@ -170,7 +175,7 @@ function renderLayoutOptions() {
 function maybeStartGame() {
   const every = window.TypingGimContent.profiles.gameEveryCompletedLessons || 2;
   if (state.completedLessons.length && state.completedLessons.length % every === 0) {
-    games.start();
+    games.showReadyMessage?.("Mini game ready. Press Start when you want to play.");
   }
 }
 

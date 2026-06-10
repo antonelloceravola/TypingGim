@@ -10,7 +10,8 @@ window.TypingGimContentManifest = {
     "random-pairs",
     "weak-key-boost",
     "word-mixer",
-    "sentence-drill"
+    "sentence-drill",
+    "random-sentences"
   ],
   "games": [
     "falling-letters",
@@ -31,6 +32,7 @@ window.TypingGimContentManifest = {
     "007-top-row-ru-ei",
     "008-bottom-row-vm-c-comma",
     "009-real-sentences",
+    "010-random-sentences",
     "100-advanced-long-text"
   ]
 };

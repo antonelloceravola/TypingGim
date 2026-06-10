@@ -3,14 +3,15 @@ window.TypingGim.generatorHelpers = {};
 function buildPrompt({ exercise, step, generator, state, layout, profile, weakKeys }) {
   const keys = resolveKeys(exercise, step, layout);
   const language = layout.language || "en";
+  const config = { ...generator, ...step };
 
   // if (generator.type === "sentenceDrill") {
   //   return sentenceDrill(exercise, step, language);
   // }
 
-  if (exercise.sentences) {
-    return pickMany(exercise.sentences[language] || exercise.sentences.en || [], 2).join(" ");
-  }
+  // if (exercise.sentences) {
+  //   return pickMany(exercise.sentences[language] || exercise.sentences.en || [], 2).join(" ");
+  // }
 
   // switch (generator.type) {
   //   case "repeat":
@@ -28,7 +29,7 @@ function buildPrompt({ exercise, step, generator, state, layout, profile, weakKe
   //   default:
   //     return randomPairs(keys, generator);
   // }
-  const config = { ...generator, ...step };
+  
 
   if (typeof generator.generate === "function") {
     return generator.generate({

@@ -4,6 +4,7 @@ const els = {
   prevLesson: document.querySelector("#prevLesson"),
   repeatLesson: document.querySelector("#repeatLesson"),
   nextLesson: document.querySelector("#nextLesson"),
+  lessonBanner: document.querySelector("#lessonBanner"),
   lessonTitle: document.querySelector("#lessonTitle"),
   phaseLabel: document.querySelector("#phaseLabel"),
   stepLabel: document.querySelector("#stepLabel"),
@@ -28,6 +29,8 @@ let content;
 let state;
 let engine;
 let games;
+let currentLessonId = null;
+let lessonBannerTimer = null;
 
 async function main() {
   content = await window.TypingGim.loadContent();
@@ -69,6 +72,8 @@ function bindEvents() {
   });
 
   window.addEventListener("keydown", (event) => {
+    if (handleLessonArrowNavigation(event)) return;
+
     window.TypingGim.setKeyboardState(els.keyboard, {
       target: engine.getTargetKey(),
       pressed: event.key === " " ? "space" : event.key,
@@ -81,16 +86,13 @@ function bindEvents() {
   });
 
   els.prevLesson.addEventListener("click", () => {
-    engine.previousLesson();
-    window.TypingGim.saveState(state);
+    goToPreviousLesson();
   });
   els.nextLesson.addEventListener("click", () => {
-    engine.nextLesson();
-    window.TypingGim.saveState(state);
+    goToNextLesson();
   });
   els.repeatLesson.addEventListener("click", () => {
-    engine.repeatLesson();
-    window.TypingGim.saveState(state);
+    repeatCurrentExercise();
   });
   els.layoutSelect.addEventListener("change", () => {
     engine.setLayout(els.layoutSelect.value);
@@ -118,6 +120,7 @@ function render() {
   els.stepLabel.textContent = `Step ${state.stepIndex + 1} of ${engine.exercise.steps.length}`;
   els.adaptiveHint.textContent = engine.getAdaptiveHint();
   els.progressBar.style.width = `${Math.round(engine.getProgress() * 100)}%`;
+  handleLessonChangeNotice();
 }
 
 function renderPrompt() {
@@ -229,6 +232,75 @@ function renderLessonList() {
     item.appendChild(button);
     els.lessonList.appendChild(item);
   });
+  scrollCurrentLessonIntoView();
+}
+
+function handleLessonArrowNavigation(event) {
+  if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return false;
+  if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return false;
+  if (games?.isRunning()) return false;
+  if (event.target?.matches?.("select, button")) return false;
+
+  event.preventDefault();
+  if (event.key === "ArrowLeft") {
+    goToPreviousLesson();
+  } else if (event.key === "ArrowRight") {
+    goToNextLesson();
+  } else {
+    repeatCurrentExercise();
+  }
+  return true;
+}
+
+function goToPreviousLesson() {
+  engine.previousLesson();
+  window.TypingGim.saveState(state);
+  els.typingInput.focus();
+}
+
+function goToNextLesson() {
+  engine.nextLesson();
+  window.TypingGim.saveState(state);
+  els.typingInput.focus();
+}
+
+function repeatCurrentExercise() {
+  engine.repeatLesson();
+  window.TypingGim.saveState(state);
+  showLessonBanner(`Exercise restarted: ${engine.exercise.title}`);
+  els.typingInput.focus();
+}
+
+function handleLessonChangeNotice() {
+  const lesson = engine.exercise;
+  if (!lesson) return;
+
+  if (currentLessonId === null) {
+    currentLessonId = lesson.id;
+    return;
+  }
+
+  if (currentLessonId === lesson.id) return;
+  currentLessonId = lesson.id;
+  showLessonBanner(`Exercise changed: ${lesson.title}`);
+}
+
+function showLessonBanner(message) {
+  if (!els.lessonBanner) return;
+  clearTimeout(lessonBannerTimer);
+  els.lessonBanner.textContent = message;
+  els.lessonBanner.classList.add("visible");
+  els.lessonBanner.setAttribute("aria-hidden", "false");
+  lessonBannerTimer = setTimeout(() => {
+    els.lessonBanner.classList.remove("visible");
+    els.lessonBanner.setAttribute("aria-hidden", "true");
+  }, 2600);
+}
+
+function scrollCurrentLessonIntoView() {
+  const activeButton = els.lessonList.querySelector("button.active");
+  if (!activeButton) return;
+  activeButton.scrollIntoView({ block: "nearest", inline: "nearest" });
 }
 
 function renderLayoutOptions() {

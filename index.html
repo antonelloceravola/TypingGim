@@ -28,11 +28,22 @@
               <h2 id="lessonTitle">Loading lesson</h2>
             </div>
             <div class="lesson-actions">
-              <button id="prevLesson" type="button" title="Previous lesson" aria-label="Previous lesson">‹</button>
-              <button id="repeatLesson" type="button">Repeat</button>
-              <button id="nextLesson" type="button" title="Next lesson" aria-label="Next lesson">›</button>
+              <button id="prevLesson" type="button" title="Previous lesson (Left Arrow)" aria-label="Previous lesson, Left Arrow">
+                <span aria-hidden="true">‹</span>
+                <kbd>←</kbd>
+              </button>
+              <button id="repeatLesson" type="button" title="Repeat exercise (Up or Down Arrow)" aria-label="Repeat exercise, Up or Down Arrow">
+                <span>Repeat</span>
+                <kbd>↑↓</kbd>
+              </button>
+              <button id="nextLesson" type="button" title="Next lesson (Right Arrow)" aria-label="Next lesson, Right Arrow">
+                <kbd>→</kbd>
+                <span aria-hidden="true">›</span>
+              </button>
             </div>
           </div>
+
+          <div id="lessonBanner" class="lesson-banner" aria-live="polite" aria-hidden="true"></div>
 
           <div class="exercise-meta">
             <span id="stepLabel">Step 1</span>

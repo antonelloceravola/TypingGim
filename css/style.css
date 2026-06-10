@@ -177,7 +177,53 @@ h2 {
 }
 
 .lesson-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   min-width: 42px;
+}
+
+.lesson-actions kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: #f4f8f6;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.lesson-banner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 20;
+  width: min(420px, calc(100vw - 32px));
+  padding: 18px 22px;
+  border: 1px solid rgba(22,119,95,.24);
+  border-radius: 8px;
+  background: rgba(237,247,243,.98);
+  box-shadow: 0 22px 70px rgba(31,47,40,.18);
+  color: var(--accent-strong);
+  font-size: 1.08rem;
+  font-weight: 800;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.96);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.lesson-banner.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .exercise-meta {
@@ -230,14 +276,14 @@ h2 {
 }
 
 .prompt-char.current {
-  border-color: var(--gold);
+  border-color: #00dc4c;
   color: var(--ink);
 }
 
 .prompt-char.current.space {
   border-color: #7f8f87;
   background: #edf1ef;
-  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.47);
+  box-shadow: 0 0 0 3px #00dc4c;
 }
 
 .prompt-char.error {

@@ -168,7 +168,7 @@ function renderLayoutOptions() {
 }
 
 function maybeStartGame() {
-  const every = window.TypingGimContent.profile.gameEveryCompletedLessons || 2;
+  const every = window.TypingGimContent.profiles.gameEveryCompletedLessons || 2;
   if (state.completedLessons.length && state.completedLessons.length % every === 0) {
     games.start();
   }

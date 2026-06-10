@@ -44,14 +44,27 @@ function repeat(keys, generator) {
   }).join(" ");
 }
 
+// function alternate(keys, generator) {
+//   const groups = generator.groups || 10;
+//   const pairs = [];
+//   for (let i = 0; i < groups; i += 1) {
+//     const a = keys[i % keys.length];
+//     const b = keys[(keys.length - 1 - i + keys.length) % keys.length];
+//     pairs.push(`${a}${b}`);
+//   }
+//   return pairs.join(" ");
+// }
 function alternate(keys, generator) {
   const groups = generator.groups || 10;
   const pairs = [];
-  for (let i = 0; i < groups; i += 1) {
+
+  for (let i = 0; i < groups; i++) {
     const a = keys[i % keys.length];
-    const b = keys[(keys.length - 1 - i + keys.length) % keys.length];
+    const b = keys[(i + 1) % keys.length];
+
     pairs.push(`${a}${b}`);
   }
+
   return pairs.join(" ");
 }
 

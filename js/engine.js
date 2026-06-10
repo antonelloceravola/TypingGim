@@ -1,7 +1,3 @@
-// import { findWeakKeys, getAdaptiveHint, shouldRepeatWrongKey } from "./adaptive-engine.js";
-// import { buildPrompt, getSentenceDrillItems, resolveKeys } from "./generator-loader.js";
-// import { markLessonComplete, recordExerciseResult, recordKey } from "./statistics.js";
-
 class TypingEngine extends EventTarget {
   constructor({ content, state }) {
     super();
@@ -37,14 +33,14 @@ class TypingEngine extends EventTarget {
     const generator = this.content.generatorsById[this.step.generator];
     const step = { ...this.step, sentenceIndex: this.sentenceDrill.sentenceIndex };
     const keys = window.TypingGim.resolveKeys(this.exercise, this.step, this.layout);
-    const weakKeys = window.TypingGim.findWeakKeys(this.state, keys, this.content.profile);
+    const weakKeys = window.TypingGim.findWeakKeys(this.state, keys, this.content.profiles);
     this.prompt = window.TypingGim.buildPrompt({
       exercise: this.exercise,
       step,
       generator,
       state: this.state,
       layout: this.layout,
-      profile: this.content.profile,
+      profile: this.content.profiles,
       weakKeys
     });
     this.position = 0;
@@ -71,7 +67,7 @@ class TypingEngine extends EventTarget {
     } else {
       this.lastMistake = expected;
       this.promptHadError = true;
-      if (!this.isSentenceDrillStep() && window.TypingGim.shouldRepeatWrongKey(this.content.profile)) {
+      if (!this.isSentenceDrillStep() && window.TypingGim.shouldRepeatWrongKey(this.content.profiles)) {
         this.prompt = `${this.prompt.slice(0, this.position)}${expected}${this.prompt.slice(this.position)}`;
       }
     }
@@ -133,7 +129,7 @@ class TypingEngine extends EventTarget {
       const required = this.step.repeatUntilCorrect || 1;
       return `Sentence ${this.sentenceDrill.sentenceIndex + 1}/${sentences.length} · Clean ${this.sentenceDrill.cleanRepeats}/${required}`;
     }
-    return window.TypingGim.getAdaptiveHint(this.state, window.TypingGim.resolveKeys(this.exercise, this.step, this.layout), this.content.profile);
+    return window.TypingGim.getAdaptiveHint(this.state, window.TypingGim.resolveKeys(this.exercise, this.step, this.layout), this.content.profiles);
   }
 
   isComplete() {

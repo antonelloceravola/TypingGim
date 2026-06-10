@@ -37,7 +37,7 @@ window.TypingGimContentManifest = {
     "0009-home-row-sl",
     "0010-home-row-a-anchor",
     "0011-complete-home-row",
-    "0012-home-row-gh.js",
+    "0012-home-row-gh",
     "0013-home-row-words",
     "0014-top-row-ru",
     "0015-top-row-ei",
@@ -46,10 +46,10 @@ window.TypingGimContentManifest = {
     "0018-top-row-ty",
     "0019-top-row-home-row",
     "0020-top-row-words",
-    // "0018-top-row-ru-ei",
-    // "0026-bottom-row-vm-c-comma",
-    // "0034-real-sentences",
-    // "0035-random-sentences",
-    // "0036-advanced-long-text"
+
+    "0226-bottom-row-vm-c-comma",
+    "0234-real-sentences",
+    "0235-random-sentences",
+    "0236-advanced-long-text"
   ]
 };

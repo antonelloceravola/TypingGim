@@ -1,4 +1,4 @@
-export function buildPrompt({ exercise, step, generator, state, layout, profile, weakKeys }) {
+function buildPrompt({ exercise, step, generator, state, layout, profile, weakKeys }) {
   const keys = resolveKeys(exercise, step, layout);
   const language = layout.language || "en";
 
@@ -27,11 +27,13 @@ export function buildPrompt({ exercise, step, generator, state, layout, profile,
       return randomPairs(keys, generator);
   }
 }
+window.TypingGim.buildPrompt = buildPrompt;
 
-export function resolveKeys(exercise, step = {}, layout) {
+function resolveKeys(exercise, step = {}, layout) {
   const overridden = exercise.layoutKeyOverrides?.[layout.id] || exercise.keys || [];
   return step.keys || overridden;
 }
+window.TypingGim.resolveKeys = resolveKeys;
 
 function repeat(keys, generator) {
   const groupSize = generator.groupSize || 3;
@@ -69,7 +71,7 @@ function wordMixer(exercise, generator, language, keys) {
   return pickMany(words, generator.wordsPerRound || 8).join(" ");
 }
 
-export function getSentenceDrillItems(exercise, language = "en") {
+function getSentenceDrillItems(exercise, language = "en") {
   const direct = exercise.sentences?.[language] || exercise.sentences?.en;
   if (direct?.length) return direct;
 
@@ -80,6 +82,7 @@ export function getSentenceDrillItems(exercise, language = "en") {
     ?.map((sentence) => sentence.trim())
     .filter(Boolean) || [];
 }
+window.TypingGim.getSentenceDrillItems = getSentenceDrillItems;
 
 function sentenceDrill(exercise, step, language) {
   const sentences = getSentenceDrillItems(exercise, language);

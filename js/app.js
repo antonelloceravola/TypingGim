@@ -1,10 +1,3 @@
-import { loadContent } from "./exercise-loader.js";
-import { GamesEngine } from "./games-engine.js";
-import { TypingEngine } from "./engine.js";
-import { renderKeyboard, setKeyboardState } from "./keyboard.js";
-import { loadState, resetState, saveState } from "./storage.js";
-import { getAccuracy, getCpm, getWpm } from "./statistics.js";
-
 const els = {
   layoutSelect: document.querySelector("#layoutSelect"),
   resetProgress: document.querySelector("#resetProgress"),
@@ -28,14 +21,20 @@ const els = {
   startGame: document.querySelector("#startGame")
 };
 
-const content = await loadContent();
-let state = loadState();
-const engine = new TypingEngine({ content, state });
-const games = new GamesEngine({ area: els.gameArea, content, engine });
+let content;
+let state;
+let engine;
+let games;
 
-init();
+async function main() {
+  content = await window.TypingGim.loadContent();
 
-function init() {
+  // Load Resources
+  state = window.TypingGim.loadState();
+  engine = new window.TypingGim.TypingEngine({ content, state });
+  games = new window.TypingGim.GamesEngine({ area: els.gameArea, content, engine });
+
+  // Initialize app
   renderLayoutOptions();
   bindEvents();
   engine.startCurrentStep();
@@ -56,12 +55,12 @@ function bindEvents() {
       event.preventDefault();
       engine.handleCharacter(event.key);
       els.typingInput.value = "";
-      saveState(state);
+      window.TypingGim.saveState(state);
     }
   });
 
   window.addEventListener("keydown", (event) => {
-    setKeyboardState(els.keyboard, {
+    window.TypingGim.setKeyboardState(els.keyboard, {
       target: engine.getTargetKey(),
       pressed: event.key === " " ? "space" : event.key,
       mistake: engine.lastMistake
@@ -69,37 +68,37 @@ function bindEvents() {
   });
 
   window.addEventListener("keyup", () => {
-    setKeyboardState(els.keyboard, { target: engine.getTargetKey(), pressed: null, mistake: engine.lastMistake });
+    window.TypingGim.setKeyboardState(els.keyboard, { target: engine.getTargetKey(), pressed: null, mistake: engine.lastMistake });
   });
 
   els.prevLesson.addEventListener("click", () => {
     engine.previousLesson();
-    saveState(state);
+    window.TypingGim.saveState(state);
   });
   els.nextLesson.addEventListener("click", () => {
     engine.nextLesson();
-    saveState(state);
+    window.TypingGim.saveState(state);
   });
   els.repeatLesson.addEventListener("click", () => {
     engine.repeatLesson();
-    saveState(state);
+    window.TypingGim.saveState(state);
   });
   els.layoutSelect.addEventListener("change", () => {
     engine.setLayout(els.layoutSelect.value);
-    saveState(state);
+    window.TypingGim.saveState(state);
   });
   els.resetProgress.addEventListener("click", () => {
-    state = resetState();
+    state = window.TypingGim.resetState();
     engine.state = state;
     engine.startCurrentStep();
-    saveState(state);
+    window.TypingGim.saveState(state);
   });
   els.startGame.addEventListener("click", () => games.start());
 }
 
 function render() {
-  renderKeyboard(els.keyboard, engine.layout);
-  setKeyboardState(els.keyboard, { target: engine.getTargetKey(), pressed: null, mistake: engine.lastMistake });
+  window.TypingGim.renderKeyboard(els.keyboard, engine.layout);
+  window.TypingGim.setKeyboardState(els.keyboard, { target: engine.getTargetKey(), pressed: null, mistake: engine.lastMistake });
   renderPrompt();
   renderLessonList();
   renderStats();
@@ -135,15 +134,15 @@ function renderStats() {
     .filter(([, stats]) => stats.attempts >= 3)
     .sort(([, a], [, b]) => (b.errors / b.attempts) - (a.errors / a.attempts))[0]?.[0] || "-";
 
-  els.accuracyStat.textContent = `${Math.round(getAccuracy(state) * 100)}%`;
-  els.wpmStat.textContent = String(getWpm(state));
-  els.cpmStat.textContent = String(getCpm(state));
+  els.accuracyStat.textContent = `${Math.round(window.TypingGim.getAccuracy(state) * 100)}%`;
+  els.wpmStat.textContent = String(window.TypingGim.getWpm(state));
+  els.cpmStat.textContent = String(window.TypingGim.getCpm(state));
   els.weakKeyStat.textContent = weakKey;
 }
 
 function renderLessonList() {
   els.lessonList.innerHTML = "";
-  content.exercises.forEach((exercise, index) => {
+  window.TypingGimContent.exercises.forEach((exercise, index) => {
     const item = document.createElement("li");
     const button = document.createElement("button");
     button.type = "button";
@@ -151,7 +150,7 @@ function renderLessonList() {
     button.innerHTML = `<span class="done-mark">${state.completedLessons.includes(exercise.id) ? "✓" : index + 1}</span><span>${exercise.title}</span>`;
     button.addEventListener("click", () => {
       engine.goToLesson(index);
-      saveState(state);
+      window.TypingGim.saveState(state);
     });
     item.appendChild(button);
     els.lessonList.appendChild(item);
@@ -160,7 +159,7 @@ function renderLessonList() {
 
 function renderLayoutOptions() {
   els.layoutSelect.innerHTML = "";
-  content.layouts.forEach((layout) => {
+  window.TypingGimContent.layouts.forEach((layout) => {
     const option = document.createElement("option");
     option.value = layout.id;
     option.textContent = layout.name;
@@ -169,8 +168,10 @@ function renderLayoutOptions() {
 }
 
 function maybeStartGame() {
-  const every = content.profile.gameEveryCompletedLessons || 2;
+  const every = window.TypingGimContent.profile.gameEveryCompletedLessons || 2;
   if (state.completedLessons.length && state.completedLessons.length % every === 0) {
     games.start();
   }
 }
+
+main();

@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.exercises.push({
   "id": "007-top-row-ru-ei",
   "title": "Top Row - R U E I",
   "phase": "Phase 3 - Top Row",
@@ -9,4 +9,4 @@
     { "generator": "alternate" },
     { "generator": "random-pairs" }
   ]
-}
+});

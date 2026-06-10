@@ -1,7 +1,7 @@
-{
+window.TypingGimContent.games.push({
   "id": "typing-race",
   "name": "Typing Race",
   "type": "typingRace",
   "description": "Advance by typing the target sequence correctly.",
   "durationSeconds": 25
-}
+});

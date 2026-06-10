@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.exercises.push({
   "id": "009-real-sentences",
   "title": "Real Sentences",
   "phase": "Phase 5 - Real Sentences",
@@ -11,4 +11,4 @@
   "steps": [
     { "generator": "word-mixer" }
   ]
-}
+});

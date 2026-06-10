@@ -1,4 +1,4 @@
-export class GamesEngine {
+class GamesEngine {
   constructor({ area, content, engine }) {
     this.area = area;
     this.content = content;
@@ -65,3 +65,5 @@ export class GamesEngine {
     this.fallingLetters = this.fallingLetters.filter((item) => item !== match);
   }
 }
+
+window.TypingGim.GamesEngine = GamesEngine;

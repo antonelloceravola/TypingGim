@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.exercises.push({
   "id": "004-home-row-a-anchor",
   "title": "Home Row - A and Anchor",
   "phase": "Phase 1 - Home Row",
@@ -10,4 +10,4 @@
     { "generator": "alternate" },
     { "generator": "random-pairs" }
   ]
-}
+});

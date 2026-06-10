@@ -1,4 +1,4 @@
-export function renderKeyboard(container, layout) {
+function renderKeyboard(container, layout) {
   container.innerHTML = "";
   layout.rows.forEach((row) => {
     const rowEl = document.createElement("div");
@@ -8,14 +8,16 @@ export function renderKeyboard(container, layout) {
   });
   container.appendChild(createFingerLegend());
 }
+window.TypingGim.renderKeyboard = renderKeyboard;
 
-export function setKeyboardState(container, { target, pressed, mistake }) {
+function setKeyboardState(container, { target, pressed, mistake }) {
   container.querySelectorAll(".key").forEach((keyEl) => {
     keyEl.classList.toggle("target", keyEl.dataset.key === normalizeKey(target));
     keyEl.classList.toggle("pressed", keyEl.dataset.key === normalizeKey(pressed));
     keyEl.classList.toggle("mistake", keyEl.dataset.key === normalizeKey(mistake));
   });
 }
+window.TypingGim.setKeyboardState = setKeyboardState;
 
 function createKey(key, layout) {
   const el = document.createElement("div");

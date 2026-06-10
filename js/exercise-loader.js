@@ -1,30 +1,40 @@
-import { fallbackContent } from "./fallback-content.js";
+window.TypingGim.loadContent = async function loadContent() {
+  const manifest = window.TypingGimContentManifest;
 
-export async function loadContent() {
-  try {
-    const manifest = await fetchJson("content-manifest.json");
-    const [layouts, exercises, generators, games, profiles] = await Promise.all([
-      loadAll(manifest.layouts),
-      loadAll(manifest.exercises),
-      loadAll(manifest.generators),
-      loadAll(manifest.games),
-      loadAll(manifest.profiles)
-    ]);
-    return normalize({ layouts, exercises, generators, games, profiles });
-  } catch (error) {
-    console.warn("Using bundled TypingGim content fallback.", error);
-    return normalize(fallbackContent);
+  if (!manifest) {
+    throw new Error("TypingGimContentManifest not found. Make sure content-manifest.js is loaded before js/exercise-loader.js.");
   }
+
+  await loadCategoryScripts("layouts", manifest.layouts);
+  await loadCategoryScripts("generators", manifest.generators);
+  await loadCategoryScripts("games", manifest.games);
+  await loadCategoryScripts("profiles", manifest.profiles);
+  await loadCategoryScripts("exercises", manifest.exercises);
+
+  return normalize(window.TypingGimContent);
+};
+
+function loadCategoryScripts(category, names) {
+  return Promise.all(names.map((name) => loadScript(`${category}/${name}.js`)));
 }
 
-async function loadAll(paths) {
-  return Promise.all(paths.map(fetchJson));
-}
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[data-typinggim-src="${src}"]`);
 
-async function fetchJson(path) {
-  const response = await fetch(path);
-  if (!response.ok) throw new Error(`Could not load ${path}`);
-  return response.json();
+    if (existing) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = src;
+    script.dataset.typinggimSrc = src;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+
+    document.head.appendChild(script);
+  });
 }
 
 function normalize(content) {

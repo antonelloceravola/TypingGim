@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.exercises.push({
   "id": "006-home-row-words",
   "title": "Home Row Words",
   "phase": "Phase 2 - Home Row Words",
@@ -13,4 +13,4 @@
     { "generator": "word-mixer" },
     { "generator": "weak-key-boost" }
   ]
-}
+});

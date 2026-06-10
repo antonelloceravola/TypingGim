@@ -1,7 +1,7 @@
-{
+window.TypingGimContent.games.push({
   "id": "repair-the-word",
   "name": "Repair the Word",
   "type": "repairWord",
   "description": "Type the missing letter.",
   "durationSeconds": 20
-}
+});

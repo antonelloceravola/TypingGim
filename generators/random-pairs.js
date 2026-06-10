@@ -1,7 +1,7 @@
-{
+window.TypingGimContent.generators.push({
   "id": "random-pairs",
   "name": "Random Pairs",
   "type": "randomPairs",
   "description": "Prevents memorization with mixed key pairs.",
   "groups": 12
-}
+});

@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.exercises.push({
   "id": "100-advanced-long-text",
   "title": "Advanced Long Text",
   "phase": "Advanced - Sentence Control",
@@ -15,4 +15,4 @@
       "advance": "sequential"
     }
   ]
-}
+});

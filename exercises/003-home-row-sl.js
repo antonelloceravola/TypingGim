@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.exercises.push({
   "id": "003-home-row-sl",
   "title": "Home Row - S and L",
   "phase": "Phase 1 - Home Row",
@@ -9,4 +9,4 @@
     { "generator": "alternate", "keys": ["s", "l", "d", "k"] },
     { "generator": "random-pairs" }
   ]
-}
+});

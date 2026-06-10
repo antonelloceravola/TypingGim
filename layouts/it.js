@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.layouts.push({
   "id": "it",
   "name": "Italian Keyboard",
   "language": "it",
@@ -18,4 +18,4 @@
     "z": "L5", "x": "L4", "c": "L3", "v": "L2", "b": "L2",
     "n": "R2", "m": "R2", ",": "R3", ".": "R4", "-": "R5"
   }
-}
+});

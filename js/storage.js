@@ -1,21 +1,24 @@
 const STORAGE_KEY = "typinggim.state.v1";
 
-export function loadState() {
+function loadState() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || createDefaultState();
   } catch {
     return createDefaultState();
   }
 }
+window.TypingGim.loadState = loadState;
 
-export function saveState(state) {
+ function saveState(state) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
+window.TypingGim.saveState = saveState;
 
-export function resetState() {
+function resetState() {
   localStorage.removeItem(STORAGE_KEY);
   return createDefaultState();
 }
+window.TypingGim.resetState = resetState;
 
 function createDefaultState() {
   return {

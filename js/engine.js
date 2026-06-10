@@ -1,8 +1,8 @@
-import { findWeakKeys, getAdaptiveHint, shouldRepeatWrongKey } from "./adaptive-engine.js";
-import { buildPrompt, getSentenceDrillItems, resolveKeys } from "./generator-loader.js";
-import { markLessonComplete, recordExerciseResult, recordKey } from "./statistics.js";
+// import { findWeakKeys, getAdaptiveHint, shouldRepeatWrongKey } from "./adaptive-engine.js";
+// import { buildPrompt, getSentenceDrillItems, resolveKeys } from "./generator-loader.js";
+// import { markLessonComplete, recordExerciseResult, recordKey } from "./statistics.js";
 
-export class TypingEngine extends EventTarget {
+class TypingEngine extends EventTarget {
   constructor({ content, state }) {
     super();
     this.content = content;
@@ -36,9 +36,9 @@ export class TypingEngine extends EventTarget {
     this.syncSentenceDrillState();
     const generator = this.content.generatorsById[this.step.generator];
     const step = { ...this.step, sentenceIndex: this.sentenceDrill.sentenceIndex };
-    const keys = resolveKeys(this.exercise, this.step, this.layout);
-    const weakKeys = findWeakKeys(this.state, keys, this.content.profile);
-    this.prompt = buildPrompt({
+    const keys = window.TypingGim.resolveKeys(this.exercise, this.step, this.layout);
+    const weakKeys = window.TypingGim.findWeakKeys(this.state, keys, this.content.profile);
+    this.prompt = window.TypingGim.buildPrompt({
       exercise: this.exercise,
       step,
       generator,
@@ -62,8 +62,8 @@ export class TypingEngine extends EventTarget {
     const correct = typed === expected;
     const reactionMs = Date.now() - this.lastTargetAt;
 
-    recordKey(this.state, { expected, typed, correct, reactionMs });
-    recordExerciseResult(this.state, this.exercise.id, correct);
+    window.TypingGim.recordKey(this.state, { expected, typed, correct, reactionMs });
+    window.TypingGim.recordExerciseResult(this.state, this.exercise.id, correct);
 
     if (correct) {
       this.position += 1;
@@ -71,7 +71,7 @@ export class TypingEngine extends EventTarget {
     } else {
       this.lastMistake = expected;
       this.promptHadError = true;
-      if (!this.isSentenceDrillStep() && shouldRepeatWrongKey(this.content.profile)) {
+      if (!this.isSentenceDrillStep() && window.TypingGim.shouldRepeatWrongKey(this.content.profile)) {
         this.prompt = `${this.prompt.slice(0, this.position)}${expected}${this.prompt.slice(this.position)}`;
       }
     }
@@ -129,11 +129,11 @@ export class TypingEngine extends EventTarget {
 
   getAdaptiveHint() {
     if (this.isSentenceDrillStep()) {
-      const sentences = getSentenceDrillItems(this.exercise, this.layout.language || "en");
+      const sentences = window.TypingGim.getSentenceDrillItems(this.exercise, this.layout.language || "en");
       const required = this.step.repeatUntilCorrect || 1;
       return `Sentence ${this.sentenceDrill.sentenceIndex + 1}/${sentences.length} · Clean ${this.sentenceDrill.cleanRepeats}/${required}`;
     }
-    return getAdaptiveHint(this.state, resolveKeys(this.exercise, this.step, this.layout), this.content.profile);
+    return window.TypingGim.getAdaptiveHint(this.state, window.TypingGim.resolveKeys(this.exercise, this.step, this.layout), this.content.profile);
   }
 
   isComplete() {
@@ -151,7 +151,7 @@ export class TypingEngine extends EventTarget {
       return;
     }
 
-    markLessonComplete(this.state, this.exercise.id);
+    window.TypingGim.markLessonComplete(this.state, this.exercise.id);
     if (this.state.lessonIndex < this.content.exercises.length - 1) {
       this.state.lessonIndex += 1;
     }
@@ -199,7 +199,7 @@ export class TypingEngine extends EventTarget {
 
     const requiredRepeats = this.step.repeatUntilCorrect || 1;
     const language = this.layout.language || "en";
-    const sentences = getSentenceDrillItems(this.exercise, language);
+    const sentences = window.TypingGim.getSentenceDrillItems(this.exercise, language);
 
     if (!this.promptHadError) {
       this.sentenceDrill.cleanRepeats += 1;
@@ -223,3 +223,5 @@ export class TypingEngine extends EventTarget {
     return false;
   }
 }
+
+window.TypingGim.TypingEngine = TypingEngine;

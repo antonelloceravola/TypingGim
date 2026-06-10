@@ -237,7 +237,7 @@ h2 {
 .prompt-char.current.space {
   border-color: #7f8f87;
   background: #edf1ef;
-  box-shadow: 0 0 0 3px rgba(127,143,135,.16);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.47);
 }
 
 .prompt-char.error {

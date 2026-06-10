@@ -1,7 +1,7 @@
-{
+window.TypingGimContent.generators.push({
   "id": "alternate",
   "name": "Alternate",
   "type": "alternate",
   "description": "Alternating finger rhythm.",
   "groups": 10
-}
+});

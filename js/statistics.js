@@ -1,4 +1,4 @@
-export function recordKey(state, payload) {
+function recordKey(state, payload) {
   const key = normalizeKey(payload.expected);
   if (!key) return;
 
@@ -27,36 +27,42 @@ export function recordKey(state, payload) {
     if (payload.reactionMs > 900) keyStats.slowHits += 1;
   }
 }
+window.TypingGim.recordKey = recordKey;
 
-export function recordExerciseResult(state, exerciseId, correct) {
+function recordExerciseResult(state, exerciseId, correct) {
   state.exercises[exerciseId] ||= { attempts: 0, errors: 0, completions: 0 };
   state.exercises[exerciseId].attempts += 1;
   if (!correct) state.exercises[exerciseId].errors += 1;
 }
+window.TypingGim.recordExerciseResult = recordExerciseResult;
 
-export function markLessonComplete(state, lessonId) {
+function markLessonComplete(state, lessonId) {
   if (!state.completedLessons.includes(lessonId)) {
     state.completedLessons.push(lessonId);
   }
   updateStreak(state);
 }
+window.TypingGim.markLessonComplete = markLessonComplete;
 
-export function getAccuracy(state) {
+function getAccuracy(state) {
   if (!state.totals.attempts) return 1;
   return state.totals.correct / state.totals.attempts;
 }
+window.TypingGim.getAccuracy = getAccuracy;
 
-export function getWpm(state) {
+function getWpm(state) {
   const elapsedMinutes = Math.max((Date.now() - state.totals.startedAt) / 60000, 1 / 60);
   return Math.round((state.totals.correct / 5) / elapsedMinutes);
 }
+window.TypingGim.getWpm = getWpm;
 
-export function getCpm(state) {
+function getCpm(state) {
   const elapsedMinutes = Math.max((Date.now() - state.totals.startedAt) / 60000, 1 / 60);
   return Math.round(state.totals.correct / elapsedMinutes);
 }
+window.TypingGim.getCpm = getCpm;
 
-export function getKeySummary(state, key) {
+function getKeySummary(state, key) {
   const stats = state.keys[normalizeKey(key)];
   if (!stats || !stats.attempts) return { accuracy: 1, avgReactionMs: 0, errorRate: 0 };
   return {
@@ -65,6 +71,7 @@ export function getKeySummary(state, key) {
     errorRate: stats.errors / stats.attempts
   };
 }
+window.TypingGim.getKeySummary = getKeySummary;
 
 function updateStreak(state) {
   const today = new Date().toISOString().slice(0, 10);

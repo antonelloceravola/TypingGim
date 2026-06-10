@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.exercises.push({
   "id": "005-complete-home-row",
   "title": "Complete Home Row",
   "phase": "Phase 1 - Home Row",
@@ -9,4 +9,4 @@
     { "generator": "random-pairs" },
     { "generator": "weak-key-boost" }
   ]
-}
+});

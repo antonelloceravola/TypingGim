@@ -1,4 +1,4 @@
-{
+window.TypingGimContent.profiles.push({
   "id": "beginner",
   "name": "Beginner",
   "adaptive": {
@@ -10,4 +10,4 @@
     "slowKeyMs": 900
   },
   "gameEveryCompletedLessons": 2
-}
+});

@@ -10,7 +10,8 @@ window.TypingGimContent.exercises.push({
     "it": ["sala", "alla", "falla", "salda", "falsi", "dalla"]
   },
   "steps": [
-    { "generator": "word-mixer" },
-    { "generator": "weak-key-boost" }
+    { "generator": "word-mixer", "wordsPerRound": 6 },
+    { "generator": "word-mixer", "wordsPerRound": 10 },
+    { "generator": "weak-key-boost", "groups": 14 }
   ]
 });

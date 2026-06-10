@@ -6,8 +6,9 @@ window.TypingGimContent.exercises.push({
   "keys": ["a", ";", "s", "l", "d", "k", "f", "j"],
   "layoutKeyOverrides": { "it": ["a", "ò", "s", "l", "d", "k", "f", "j"] },
   "steps": [
-    { "generator": "repeat", "keys": ["a", ";"] },
-    { "generator": "alternate" },
+    { "generator": "repeat", "keys": ["a", ";"], "layoutKeyOverrides": { "it": ["a", "ò"] }, "groups": 8 },
+    { "generator": "alternate", "keys": ["a", ";"], "layoutKeyOverrides": { "it": ["a", "ò"] }, "pattern": "forward", "groups": 10 },
+    { "generator": "alternate", "pattern": "mirror", "groups": 12 },
     { "generator": "random-pairs" }
   ]
 });

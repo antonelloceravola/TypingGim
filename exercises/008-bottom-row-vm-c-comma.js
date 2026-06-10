@@ -5,8 +5,11 @@ window.TypingGimContent.exercises.push({
   "level": 4,
   "keys": ["v", "m", "c", ",", "f", "j", "d", "k"],
   "steps": [
-    { "generator": "repeat", "keys": ["v", "m", "c", ","] },
-    { "generator": "alternate" },
+    { "generator": "repeat", "keys": ["v", "m"], "groups": 8 },
+    { "generator": "alternate", "keys": ["v", "m"], "pattern": "forward", "groups": 10 },
+    { "generator": "repeat", "keys": ["c", ","], "groups": 8 },
+    { "generator": "alternate", "keys": ["c", ","], "pattern": "forward", "groups": 10 },
+    { "generator": "alternate", "keys": ["v", "m", "c", ","], "pattern": "mirror", "groups": 12 },
     { "generator": "random-pairs" }
   ]
 });

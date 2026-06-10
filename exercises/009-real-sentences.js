@@ -9,6 +9,7 @@ window.TypingGimContent.exercises.push({
     "it": ["Io amo scrivere.", "La casa è alta.", "Il sole è caldo."]
   },
   "steps": [
-    { "generator": "word-mixer" }
+    { "generator": "sentence-drill", "repeatUntilCorrect": 1 },
+    { "generator": "sentence-drill", "repeatUntilCorrect": 2 }
   ]
 });

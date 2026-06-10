@@ -6,7 +6,9 @@ window.TypingGimContent.exercises.push({
   "keys": ["a", "s", "d", "f", "j", "k", "l", ";"],
   "layoutKeyOverrides": { "it": ["a", "s", "d", "f", "j", "k", "l", "ò"] },
   "steps": [
-    { "generator": "random-pairs" },
-    { "generator": "weak-key-boost" }
+    { "generator": "alternate", "pattern": "forward", "groups": 12 },
+    { "generator": "random-pairs", "groups": 14 },
+    { "generator": "weak-key-boost", "groups": 16 },
+    { "generator": "random-pairs", "groups": 18 }
   ]
 });

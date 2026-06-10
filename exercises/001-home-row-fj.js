@@ -6,7 +6,9 @@ window.TypingGimContent.exercises.push({
   "keys": ["f", "j"],
   "steps": [
     { "generator": "repeat" },
-    { "generator": "alternate" },
+    { "generator": "alternate", "pattern": "same-first", "groups": 8 },
+    { "generator": "alternate", "pattern": "forward", "groups": 10 },
+    { "generator": "alternate", "pattern": "mirror", "groups": 10 },
     { "generator": "random-pairs" }
   ]
 });

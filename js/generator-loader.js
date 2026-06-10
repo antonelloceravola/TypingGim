@@ -14,7 +14,7 @@ function buildPrompt({ exercise, step, generator, state, layout, profile, weakKe
     case "repeat":
       return repeat(keys, generator);
     case "alternate":
-      return alternate(keys, generator);
+      return alternate(keys, { ...generator, ...step });
     case "randomPairs":
       return randomPairs(keys, generator);
     case "weakKeyBoost":
@@ -29,9 +29,15 @@ function buildPrompt({ exercise, step, generator, state, layout, profile, weakKe
 }
 window.TypingGim.buildPrompt = buildPrompt;
 
+// function resolveKeys(exercise, step = {}, layout) {
+//   const overridden = exercise.layoutKeyOverrides?.[layout.id] || exercise.keys || [];
+//   return step.keys || overridden;
+//}
 function resolveKeys(exercise, step = {}, layout) {
-  const overridden = exercise.layoutKeyOverrides?.[layout.id] || exercise.keys || [];
-  return step.keys || overridden;
+  const stepOverride = step.layoutKeyOverrides?.[layout.id];
+  const exerciseOverride = exercise.layoutKeyOverrides?.[layout.id];
+
+  return stepOverride || step.keys || exerciseOverride || exercise.keys || [];
 }
 window.TypingGim.resolveKeys = resolveKeys;
 
@@ -47,22 +53,49 @@ function repeat(keys, generator) {
 // function alternate(keys, generator) {
 //   const groups = generator.groups || 10;
 //   const pairs = [];
-//   for (let i = 0; i < groups; i += 1) {
+
+//   for (let i = 0; i < groups; i++) {
 //     const a = keys[i % keys.length];
-//     const b = keys[(keys.length - 1 - i + keys.length) % keys.length];
+//     const b = keys[(i + 1) % keys.length];
+
 //     pairs.push(`${a}${b}`);
 //   }
+
 //   return pairs.join(" ");
 // }
 function alternate(keys, generator) {
   const groups = generator.groups || 10;
+  const pattern = generator.pattern || "mirror";
   const pairs = [];
 
-  for (let i = 0; i < groups; i++) {
+  if (!keys.length) return "";
+
+  for (let i = 0; i < groups; i += 1) {
     const a = keys[i % keys.length];
     const b = keys[(i + 1) % keys.length];
 
-    pairs.push(`${a}${b}`);
+    switch (pattern) {
+      case "same-first":
+        pairs.push(`${a}${a}`);
+        break;
+
+      case "same-second":
+        pairs.push(`${b}${b}`);
+        break;
+
+      case "forward":
+        pairs.push(`${a}${b}`);
+        break;
+
+      case "reverse":
+        pairs.push(`${b}${a}`);
+        break;
+
+      case "mirror":
+      default:
+        pairs.push(i % 2 === 0 ? `${a}${b}` : `${b}${a}`);
+        break;
+    }
   }
 
   return pairs.join(" ");

@@ -55,11 +55,9 @@ function bindEvents() {
 
   els.typingInput.addEventListener("keydown", (event) => {
     if (lessonIntroActive) {
-      event.preventDefault();
-      event.stopPropagation();
-      dismissLessonIntro();
       return;
     }
+
     if (games?.isRunning()) {
       event.preventDefault();
       els.typingInput.value = "";
@@ -82,8 +80,6 @@ function bindEvents() {
 
   window.addEventListener("keydown", (event) => {
     if (lessonIntroActive) {
-      event.preventDefault();
-      dismissLessonIntro();
       return;
     }
 
@@ -292,6 +288,12 @@ function repeatCurrentExercise() {
   els.typingInput.focus();
 }
 
+function showLessonBanner() {
+  const lesson = engine.exercise;
+  if (!lesson) return;
+  showLessonIntro(lesson, "New exercise");
+}
+
 function handleLessonChangeNotice() {
   const lesson = engine.exercise;
   if (!lesson) return;
@@ -317,10 +319,29 @@ function showLessonIntro(lesson, label = "Exercise") {
     <h3>${escapeHtml(lesson.title)}</h3>
     ${lesson.goal ? `<p><strong>Goal:</strong> ${escapeHtml(lesson.goal)}</p>` : ""}
     ${lesson.instructions ? `<p><strong>Instructions:</strong> ${escapeHtml(lesson.instructions)}</p>` : ""}
-    <button type="button" data-start-exercise>Press any key to start</button>
+    <button type="button" data-start-exercise>Press SPACE to start</button>
   `;
   els.lessonBanner.classList.add("visible");
   els.lessonBanner.setAttribute("aria-hidden", "false");
+
+  // Delay key capture to avoid last key capturing
+  setTimeout( registerLessonIntroKey, 1000 );
+}
+
+function registerLessonIntroKey() {
+  window.addEventListener("keydown", (event) => {
+    const isSpace = event.key === " " ||
+                    event.key === "Space" ||
+                    event.key === "Spacebar";
+
+    if (lessonIntroActive && isSpace) {
+      window.removeEventListener("keydown", registerLessonIntroKey);
+      event.preventDefault();
+      event.stopPropagation();
+      dismissLessonIntro();
+      return;
+    }
+  });
 }
 
 function dismissLessonIntro() {

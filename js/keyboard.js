@@ -12,9 +12,9 @@ window.TypingGim.renderKeyboard = renderKeyboard;
 
 function setKeyboardState(container, { target, pressed, mistake }) {
   container.querySelectorAll(".key").forEach((keyEl) => {
-    keyEl.classList.toggle("target", keyEl.dataset.key === normalizeKey(target));
-    keyEl.classList.toggle("pressed", keyEl.dataset.key === normalizeKey(pressed));
-    keyEl.classList.toggle("mistake", keyEl.dataset.key === normalizeKey(mistake));
+    keyEl.classList.toggle("target", keyMatches(keyEl.dataset.key, target));
+    keyEl.classList.toggle("pressed", keyMatches(keyEl.dataset.key, pressed));
+    keyEl.classList.toggle("mistake", keyMatches(keyEl.dataset.key, mistake));
   });
 }
 window.TypingGim.setKeyboardState = setKeyboardState;
@@ -73,8 +73,55 @@ function getFingerForKey(key, layout) {
 function normalizeKey(key) {
   if (key === " ") return "space";
   if (typeof key !== "string") return key;
-  return key.length === 1 ? key.toLocaleLowerCase() : key;
+  return key.length === 1 ? (shiftedKeyMap[key] || key).toLocaleLowerCase() : key;
 }
+
+function keyMatches(key, target) {
+  if (!target) return false;
+  return normalizeKeyOptions(target).includes(key);
+}
+
+function normalizeKeyOptions(key) {
+  if (key === " ") return ["space"];
+  if (typeof key !== "string") return [key];
+  const normalized = normalizeKey(key);
+  const options = shiftedKeyOptions[key] || [];
+  return [normalized, ...options.map((option) => normalizeKey(option))];
+}
+
+const shiftedKeyMap = {
+  "!": "1",
+  "@": "2",
+  "#": "3",
+  "$": "4",
+  "%": "5",
+  "^": "6",
+  "&": "7",
+  "*": "8",
+  "(": "9",
+  ")": "0",
+  "_": "-",
+  "+": "=",
+  "{": "[",
+  "}": "]",
+  ":": ";",
+  "\"": "'",
+  "?": "/",
+  "<": ",",
+  ">": "."
+};
+
+const shiftedKeyOptions = {
+  ":": [";", "."],
+  "\"": ["'", "2"],
+  "?": ["/", "'"],
+  "(": ["9", "8"],
+  ")": ["0", "9"],
+  "[": ["[", "è"],
+  "]": ["]", "+"],
+  "{": ["[", "è"],
+  "}": ["]", "+"]
+};
 
 const inferredFingerMap = {
   "`": "L5",

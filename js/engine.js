@@ -125,7 +125,7 @@ class TypingEngine extends EventTarget {
 
   getAdaptiveHint() {
     if (this.isSentenceDrillStep()) {
-      const sentences = window.TypingGim.getSentenceDrillItems(this.exercise, this.layout.language || "en");
+      const sentences = window.TypingGim.generatorHelpers.getSentenceDrillItems(this.exercise, this.layout.language || "en");
       const required = this.step.repeatUntilCorrect || 1;
       return `Sentence ${this.sentenceDrill.sentenceIndex + 1}/${sentences.length} · Clean ${this.sentenceDrill.cleanRepeats}/${required}`;
     }
@@ -195,7 +195,7 @@ class TypingEngine extends EventTarget {
 
     const requiredRepeats = this.step.repeatUntilCorrect || 1;
     const language = this.layout.language || "en";
-    const sentences = window.TypingGim.getSentenceDrillItems(this.exercise, language);
+    const sentences = window.TypingGim.generatorHelpers.getSentenceDrillItems(this.exercise, language);
 
     if (!this.promptHadError) {
       this.sentenceDrill.cleanRepeats += 1;

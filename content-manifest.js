@@ -37,11 +37,11 @@ window.TypingGimContentManifest = {
     "0009-home-row-sl",
     "0010-home-row-a-anchor",
     "0011-complete-home-row",
-    "0012-home-row-words",
-    "0018-top-row-ru-ei",
-    "0026-bottom-row-vm-c-comma",
-    "0034-real-sentences",
-    "0035-random-sentences",
-    "0036-advanced-long-text"
+    // "0012-home-row-words",
+    // "0018-top-row-ru-ei",
+    // "0026-bottom-row-vm-c-comma",
+    // "0034-real-sentences",
+    // "0035-random-sentences",
+    // "0036-advanced-long-text"
   ]
 };

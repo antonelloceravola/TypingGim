@@ -7,6 +7,6 @@ window.TypingGimContent.exercises.push({
   "instructions": "Press any keys you like. Keep your eyes on the screen and notice how each pressed key lights up on the virtual keyboard.",
   "keys": [],
   "steps": [
-    { "generator": "free-press", "acceptAnyKey": true, "count": 24 }
+    { "generator": "free-press", "acceptAnyKey": true, "count": 54 }
   ]
 });

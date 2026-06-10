@@ -9,7 +9,7 @@ window.TypingGim.loadContent = async function loadContent() {
   await loadCategoryScripts("generators", manifest.generators);
   await loadCategoryScripts("games", manifest.games);
   await loadCategoryScripts("profiles", manifest.profiles);
-  await loadCategoryScripts("exercises", manifest.exercises.sort());
+  await loadCategoryScripts("exercises", manifest.exercises);
 
   return normalize(window.TypingGimContent);
 };
@@ -38,11 +38,15 @@ function loadScript(src) {
 }
 
 function normalize(content) {
-  return {
+  const result = {
     ...content,
     layoutsById: Object.fromEntries(content.layouts.map((item) => [item.id, item])),
     generatorsById: Object.fromEntries(content.generators.map((item) => [item.id, item])),
     gamesById: Object.fromEntries(content.games.map((item) => [item.id, item])),
     profile: content.profiles[0]
   };
+  // Sort exercises
+  result.exercises.sort();
+  // Return full extended content
+  return result;
 }

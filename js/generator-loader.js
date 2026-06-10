@@ -29,10 +29,6 @@ function buildPrompt({ exercise, step, generator, state, layout, profile, weakKe
 }
 window.TypingGim.buildPrompt = buildPrompt;
 
-// function resolveKeys(exercise, step = {}, layout) {
-//   const overridden = exercise.layoutKeyOverrides?.[layout.id] || exercise.keys || [];
-//   return step.keys || overridden;
-//}
 function resolveKeys(exercise, step = {}, layout) {
   const stepOverride = step.layoutKeyOverrides?.[layout.id];
   const exerciseOverride = exercise.layoutKeyOverrides?.[layout.id];
@@ -50,19 +46,6 @@ function repeat(keys, generator) {
   }).join(" ");
 }
 
-// function alternate(keys, generator) {
-//   const groups = generator.groups || 10;
-//   const pairs = [];
-
-//   for (let i = 0; i < groups; i++) {
-//     const a = keys[i % keys.length];
-//     const b = keys[(i + 1) % keys.length];
-
-//     pairs.push(`${a}${b}`);
-//   }
-
-//   return pairs.join(" ");
-// }
 function alternate(keys, generator) {
   const groups = generator.groups || 10;
   const pattern = generator.pattern || "mirror";

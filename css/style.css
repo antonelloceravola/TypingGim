@@ -147,6 +147,13 @@ h2 {
   font-size: 1.35rem;
 }
 
+#practiceFocus[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+  font-weight: 800;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 330px;
@@ -684,6 +691,58 @@ h2 {
   background: var(--finger-bg);
 }
 
+.practice-focus .app-shell {
+  grid-template-rows: auto auto 1fr;
+  gap: 10px;
+  min-height: 100svh;
+  padding: 12px;
+}
+
+.practice-focus .topbar {
+  align-items: center;
+}
+
+.practice-focus .topbar > div:first-child,
+.practice-focus .lesson-header,
+.practice-focus .exercise-meta,
+.practice-focus .progress-track,
+.practice-focus .stats-grid,
+.practice-focus .side-panel,
+.practice-focus .finger-legend {
+  display: none;
+}
+
+.practice-focus .workspace {
+  display: block;
+}
+
+.practice-focus .practice-panel,
+.practice-focus .keyboard-zone {
+  box-shadow: 0 10px 28px rgba(31, 47, 40, .07);
+}
+
+.practice-focus .practice-panel {
+  min-height: 0;
+  padding: 12px;
+}
+
+.practice-focus .prompt {
+  min-height: clamp(116px, 24svh, 210px);
+  max-height: 34svh;
+  margin: 0 0 10px;
+  padding: 18px;
+  overflow: auto;
+  font-size: clamp(1.35rem, 3.5vw, 2.6rem);
+}
+
+.practice-focus .typing-input {
+  min-height: 48px;
+}
+
+.practice-focus .keyboard-zone {
+  padding: 10px;
+}
+
 @media (max-width: 900px) {
   html,
   body {
@@ -711,10 +770,40 @@ h2 {
 
   .toolbar {
     justify-content: start;
+    flex-wrap: wrap;
   }
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .practice-focus .app-shell {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .practice-focus .topbar {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .practice-focus .toolbar {
+    justify-content: flex-end;
+  }
+
+  .practice-focus .prompt {
+    min-height: clamp(104px, 25svh, 190px);
+    max-height: 32svh;
+    padding: 14px;
+    font-size: clamp(1.25rem, 4.2vw, 2.35rem);
+  }
+
+  .practice-focus .keyboard {
+    gap: 6px;
+  }
+
+  .practice-focus .keyboard-row {
+    gap: 5px;
   }
 }
 
@@ -777,5 +866,30 @@ h2 {
 
   .key small {
     display: none;
+  }
+
+  .practice-focus .app-shell {
+    padding: 6px;
+  }
+
+  .practice-focus .practice-panel,
+  .practice-focus .keyboard-zone {
+    padding: 8px;
+  }
+
+  .practice-focus .prompt {
+    min-height: clamp(96px, 27svh, 160px);
+    max-height: 30svh;
+    margin-bottom: 8px;
+    padding: 10px;
+    font-size: clamp(1.08rem, 6.5vw, 1.8rem);
+  }
+
+  .practice-focus .typing-input {
+    min-height: 44px;
+  }
+
+  .practice-focus .keyboard {
+    gap: 5px;
   }
 }

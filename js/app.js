@@ -1,5 +1,6 @@
 const els = {
   layoutSelect: document.querySelector("#layoutSelect"),
+  practiceFocus: document.querySelector("#practiceFocus"),
   resetProgress: document.querySelector("#resetProgress"),
   prevLesson: document.querySelector("#prevLesson"),
   repeatLesson: document.querySelector("#repeatLesson"),
@@ -25,6 +26,8 @@ const els = {
   startGame: document.querySelector("#startGame")
 };
 
+const PRACTICE_FOCUS_KEY = "typinggim.practiceFocus";
+
 let content;
 let state;
 let engine;
@@ -33,6 +36,7 @@ let currentLessonId = null;
 let lessonIntroActive = false;
 let lastPreviewKey = null;
 let previewTimers = [];
+let practiceFocusActive = localStorage.getItem(PRACTICE_FOCUS_KEY) === "true";
 
 async function main() {
   content = await window.TypingGim.loadContent();
@@ -43,6 +47,7 @@ async function main() {
   games = new window.TypingGim.GamesEngine({ area: els.gameArea, content, engine });
 
   // Initialize app
+  applyPracticeFocus();
   renderLayoutOptions();
   bindEvents();
   engine.startCurrentStep();
@@ -109,6 +114,9 @@ function bindEvents() {
     engine.setLayout(els.layoutSelect.value);
     window.TypingGim.saveState(state);
   });
+  els.practiceFocus.addEventListener("click", () => {
+    setPracticeFocus(!practiceFocusActive);
+  });
   els.resetProgress.addEventListener("click", () => {
     state = window.TypingGim.resetState();
     engine.state = state;
@@ -121,6 +129,21 @@ function bindEvents() {
       dismissLessonIntro();
     }
   });
+}
+
+function setPracticeFocus(active) {
+  practiceFocusActive = active;
+  localStorage.setItem(PRACTICE_FOCUS_KEY, String(active));
+  applyPracticeFocus();
+  els.typingInput.focus();
+}
+
+function applyPracticeFocus() {
+  document.body.classList.toggle("practice-focus", practiceFocusActive);
+  els.practiceFocus.setAttribute("aria-pressed", String(practiceFocusActive));
+  els.practiceFocus.textContent = practiceFocusActive ? "Full" : "Focus";
+  els.practiceFocus.title = practiceFocusActive ? "Show full layout" : "Show focused practice layout";
+  els.practiceFocus.setAttribute("aria-label", els.practiceFocus.title);
 }
 
 function render() {

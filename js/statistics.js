@@ -1,3 +1,5 @@
+const MAX_ACTIVE_REACTION_MS = 5000;
+
 function recordKey(state, payload) {
   const key = normalizeKey(payload.expected);
   if (!key) return;
@@ -17,6 +19,7 @@ function recordKey(state, payload) {
   if (payload.correct) {
     keyStats.correct += 1;
     state.totals.correct += 1;
+    state.totals.speedCorrect = (state.totals.speedCorrect || 0) + 1;
   } else {
     keyStats.errors += 1;
     state.totals.errors += 1;
@@ -25,6 +28,7 @@ function recordKey(state, payload) {
   if (Number.isFinite(payload.reactionMs)) {
     keyStats.totalReactionMs += payload.reactionMs;
     if (payload.reactionMs > 900) keyStats.slowHits += 1;
+    state.totals.practiceMs = (state.totals.practiceMs || 0) + Math.min(Math.max(payload.reactionMs, 0), MAX_ACTIVE_REACTION_MS);
   }
 }
 window.TypingGim.recordKey = recordKey;
@@ -51,16 +55,24 @@ function getAccuracy(state) {
 window.TypingGim.getAccuracy = getAccuracy;
 
 function getWpm(state) {
-  const elapsedMinutes = Math.max((Date.now() - state.totals.startedAt) / 60000, 1 / 60);
-  return Math.round((state.totals.correct / 5) / elapsedMinutes);
+  const elapsedMinutes = getPracticeMinutes(state);
+  if (!elapsedMinutes) return 0;
+  return Math.round(((state.totals.speedCorrect || 0) / 5) / elapsedMinutes);
 }
 window.TypingGim.getWpm = getWpm;
 
 function getCpm(state) {
-  const elapsedMinutes = Math.max((Date.now() - state.totals.startedAt) / 60000, 1 / 60);
-  return Math.round(state.totals.correct / elapsedMinutes);
+  const elapsedMinutes = getPracticeMinutes(state);
+  if (!elapsedMinutes) return 0;
+  return Math.round((state.totals.speedCorrect || 0) / elapsedMinutes);
 }
 window.TypingGim.getCpm = getCpm;
+
+function getPracticeMinutes(state) {
+  const practiceMs = state.totals.practiceMs || 0;
+  if (!practiceMs) return 0;
+  return Math.max(practiceMs / 60000, 1 / 60);
+}
 
 function getKeySummary(state, key) {
   const stats = state.keys[normalizeKey(key)];

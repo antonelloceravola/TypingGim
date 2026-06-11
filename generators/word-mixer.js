@@ -6,6 +6,7 @@ window.TypingGimContent.generators.push({
   "wordsPerRound": 8,
 
   generate(context) {
+    const keys = context.keys;
     const exercise = context.exercise;
     const language = context.language;
     const wordsPerRound = context.config.wordsPerRound;

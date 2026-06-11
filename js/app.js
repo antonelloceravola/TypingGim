@@ -236,7 +236,7 @@ function renderHistory(container, values, options) {
 
 function renderLessonList() {
   els.lessonList.innerHTML = "";
-  window.TypingGimContent.exercises.forEach((exercise, index) => {
+  content.exercises.forEach((exercise, index) => {
     const item = document.createElement("li");
     const button = document.createElement("button");
     button.type = "button";
@@ -403,7 +403,7 @@ function escapeHtml(value) {
 
 function renderLayoutOptions() {
   els.layoutSelect.innerHTML = "";
-  window.TypingGimContent.layouts.forEach((layout) => {
+  content.layouts.forEach((layout) => {
     const option = document.createElement("option");
     option.value = layout.id;
     option.textContent = layout.name;
@@ -412,7 +412,7 @@ function renderLayoutOptions() {
 }
 
 function maybeStartGame() {
-  const every = window.TypingGimContent.profiles.gameEveryCompletedLessons || 2;
+  const every = content.profile?.gameEveryCompletedLessons || 2;
   if (state.completedLessons.length && state.completedLessons.length % every === 0) {
     games.showReadyMessage?.("Mini game ready. Press Start when you want to play.");
   }

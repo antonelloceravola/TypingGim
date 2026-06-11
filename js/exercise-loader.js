@@ -1,3 +1,5 @@
+const scriptLoadPromises = new Map();
+
 window.TypingGim.loadContent = async function loadContent() {
   const manifest = window.TypingGimContentManifest;
 
@@ -11,7 +13,7 @@ window.TypingGim.loadContent = async function loadContent() {
   await loadCategoryScripts("profiles", manifest.profiles);
   await loadCategoryScripts("exercises", manifest.exercises);
 
-  return normalize(window.TypingGimContent);
+  return normalize(window.TypingGimContent, manifest);
 };
 
 function loadCategoryScripts(category, names) {
@@ -19,34 +21,48 @@ function loadCategoryScripts(category, names) {
 }
 
 function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[data-typinggim-src="${src}"]`);
+  if (scriptLoadPromises.has(src)) {
+    return scriptLoadPromises.get(src);
+  }
 
+  const promise = new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[data-typinggim-src="${src}"]`);
     if (existing) {
-      resolve();
+      if (existing.dataset.typinggimLoaded === "true") {
+        resolve();
+      } else {
+        existing.addEventListener("load", () => resolve(), { once: true });
+        existing.addEventListener("error", () => reject(new Error(`Failed to load script: ${src}`)), { once: true });
+      }
       return;
     }
 
     const script = document.createElement("script");
     script.src = src;
     script.dataset.typinggimSrc = src;
-    script.onload = () => resolve();
+    script.onload = () => {
+      script.dataset.typinggimLoaded = "true";
+      resolve();
+    };
     script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
 
     document.head.appendChild(script);
   });
+
+  scriptLoadPromises.set(src, promise);
+  return promise;
 }
 
-function normalize(content) {
+function normalize(content, manifest) {
+  const exercisesById = new Map(content.exercises.map((exercise) => [exercise.id, exercise]));
   const result = {
     ...content,
+    exercises: manifest.exercises.map((id) => exercisesById.get(id)).filter(Boolean),
     layoutsById: Object.fromEntries(content.layouts.map((item) => [item.id, item])),
     generatorsById: Object.fromEntries(content.generators.map((item) => [item.id, item])),
     gamesById: Object.fromEntries(content.games.map((item) => [item.id, item])),
     profile: content.profiles[0]
   };
-  // Sort exercises
-  result.exercises.sort();
-  // Return full extended content
+
   return result;
 }

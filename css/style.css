@@ -716,13 +716,16 @@ h2 {
 .practice-focus .exercise-meta,
 .practice-focus .progress-track,
 .practice-focus .stats-grid,
-.practice-focus .side-panel,
 .practice-focus .finger-legend {
   display: none;
 }
 
 .practice-focus .workspace {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 230px);
+  gap: 10px;
+  align-items: stretch;
+  height: calc(clamp(116px, 24svh, 210px) + 82px);
 }
 
 .practice-focus .practice-panel,
@@ -731,8 +734,48 @@ h2 {
 }
 
 .practice-focus .practice-panel {
+  height: 100%;
   min-height: 0;
   padding: 12px;
+}
+
+.practice-focus .side-panel {
+  display: block;
+  min-height: 0;
+}
+
+.practice-focus .side-panel section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.practice-focus .side-panel section + section {
+  display: none;
+}
+
+.practice-focus .side-panel h2 {
+  font-size: .82rem;
+}
+
+.practice-focus .lesson-list {
+  flex: 1 1 auto;
+  gap: 4px;
+  min-height: 0;
+  max-height: none;
+  margin-top: 8px;
+}
+
+.practice-focus .lesson-list button {
+  grid-template-columns: 22px 1fr;
+  min-height: 32px;
+  padding: 4px 7px;
+  border-radius: 6px;
+  font-size: .76rem;
+  line-height: 1.15;
 }
 
 .practice-focus .prompt {
@@ -805,6 +848,20 @@ h2 {
     max-height: 32svh;
     padding: 14px;
     font-size: clamp(1.25rem, 4.2vw, 2.35rem);
+  }
+
+  .practice-focus .workspace {
+    grid-template-columns: minmax(0, 1fr) minmax(170px, 210px);
+    height: calc(clamp(104px, 25svh, 190px) + 82px);
+  }
+
+  .practice-focus .side-panel section {
+    padding: 8px;
+  }
+
+  .practice-focus .lesson-list button {
+    min-height: 30px;
+    font-size: .72rem;
   }
 
   .practice-focus .keyboard {
@@ -884,6 +941,14 @@ h2 {
   .practice-focus .practice-panel,
   .practice-focus .keyboard-zone {
     padding: 8px;
+  }
+
+  .practice-focus .workspace {
+    display: block;
+  }
+
+  .practice-focus .side-panel {
+    display: none;
   }
 
   .practice-focus .prompt {

@@ -27,6 +27,7 @@ const els = {
 };
 
 const PRACTICE_FOCUS_KEY = "typinggim.practiceFocus";
+const KEYBOARD_LAYOUT_KEY = "typinggim.keyboardLayout";
 
 let content;
 let state;
@@ -37,12 +38,15 @@ let lessonIntroActive = false;
 let lastPreviewKey = null;
 let previewTimers = [];
 let practiceFocusActive = localStorage.getItem(PRACTICE_FOCUS_KEY) === "true";
+let typingInputContext = null;
 
 async function main() {
   content = await window.TypingGim.loadContent();
 
   // Load Resources
   state = window.TypingGim.loadState();
+  state.layoutId = getSavedLayoutId(state.layoutId);
+  saveLayoutId(state.layoutId);
   engine = new window.TypingGim.TypingEngine({ content, state });
   games = new window.TypingGim.GamesEngine({ area: els.gameArea, content, engine });
 
@@ -76,8 +80,15 @@ function bindEvents() {
     if (event.key.length === 1 || event.key === " ") {
       event.preventDefault();
       clearStepPreview();
+      const contextBefore = getTypingInputContext();
+      els.typingInput.value = formatTypedInput(event.key);
       engine.handleCharacter(event.key);
-      els.typingInput.value = "";
+      const contextAfter = getTypingInputContext();
+      typingInputContext = contextAfter;
+      els.typingInput.classList.toggle("typed-mistake", Boolean(engine.lastMistake));
+      if (contextAfter !== contextBefore || (engine.position === 0 && !engine.lastMistake)) {
+        clearTypingInput(contextAfter);
+      }
       recordMetricSnapshot();
       window.TypingGim.saveState(state);
     }
@@ -112,6 +123,7 @@ function bindEvents() {
   });
   els.layoutSelect.addEventListener("change", () => {
     engine.setLayout(els.layoutSelect.value);
+    saveLayoutId(state.layoutId);
     window.TypingGim.saveState(state);
   });
   els.practiceFocus.addEventListener("click", () => {
@@ -119,6 +131,7 @@ function bindEvents() {
   });
   els.resetProgress.addEventListener("click", () => {
     state = window.TypingGim.resetState();
+    state.layoutId = getSavedLayoutId(state.layoutId);
     engine.state = state;
     engine.startCurrentStep();
     window.TypingGim.saveState(state);
@@ -146,6 +159,19 @@ function applyPracticeFocus() {
   els.practiceFocus.setAttribute("aria-label", els.practiceFocus.title);
 }
 
+function getSavedLayoutId(fallbackId) {
+  const savedLayoutId = localStorage.getItem(KEYBOARD_LAYOUT_KEY);
+  if (content.layoutsById[savedLayoutId]) return savedLayoutId;
+  if (content.layoutsById[fallbackId]) return fallbackId;
+  return content.layouts[0]?.id || "us";
+}
+
+function saveLayoutId(layoutId) {
+  if (content.layoutsById[layoutId]) {
+    localStorage.setItem(KEYBOARD_LAYOUT_KEY, layoutId);
+  }
+}
+
 function render() {
   window.TypingGim.renderKeyboard(els.keyboard, engine.layout);
   window.TypingGim.setKeyboardState(els.keyboard, { target: engine.getTargetKey(), pressed: null, mistake: engine.lastMistake });
@@ -159,8 +185,29 @@ function render() {
   els.stepLabel.textContent = `Step ${state.stepIndex + 1} of ${engine.exercise.steps.length}`;
   els.adaptiveHint.textContent = engine.getAdaptiveHint();
   els.progressBar.style.width = `${Math.round(engine.getProgress() * 100)}%`;
+  clearTypingInputOnContextChange();
   handleLessonChangeNotice();
   handleStepPreview();
+}
+
+function getTypingInputContext() {
+  return `${engine.exercise.id}:${state.stepIndex}:${engine.sentenceDrill?.sentenceIndex || 0}`;
+}
+
+function clearTypingInputOnContextChange() {
+  const context = getTypingInputContext();
+  if (typingInputContext === context) return;
+  clearTypingInput(context);
+}
+
+function clearTypingInput(context = getTypingInputContext()) {
+  typingInputContext = context;
+  els.typingInput.value = "";
+  els.typingInput.classList.remove("typed-mistake");
+}
+
+function formatTypedInput(key) {
+  return key === " " ? "Space" : key;
 }
 
 function renderPrompt() {

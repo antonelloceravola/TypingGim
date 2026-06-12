@@ -344,12 +344,21 @@ h2 {
   border-radius: 8px;
   outline: none;
   background: white;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 1.15rem;
+  font-weight: 800;
+  text-align: center;
 }
 
 .typing-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(22,119,95,.12);
+}
+
+.typing-input.typed-mistake {
+  border-color: var(--warn);
+  color: var(--warn);
+  box-shadow: 0 0 0 4px rgba(199, 63, 63, .12);
 }
 
 .progress-track {

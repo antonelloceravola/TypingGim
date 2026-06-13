@@ -590,7 +590,7 @@ h2 {
 
 .key.target {
   border-color: var(--gold);
-  box-shadow: 0 0 0 5px rgba(255, 3, 3, 0.55);
+  box-shadow: 0 0 0 5px rgb(112, 191, 1);
 }
 
 .key.pressed {
